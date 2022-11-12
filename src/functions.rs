@@ -2,11 +2,42 @@ use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
-use crate::models::*;
+use std::collections::HashMap;
+use std::fs::read_dir;
 use ril::prelude::*;
+use crate::models::*;
+
+
+const MCSIZE: u32 = 16;
 
 lazy_static::lazy_static! {
-    static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png").unwrap();
+    static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
+        .unwrap();
+
+    static ref MC_IMAGES: HashMap<(u8, u8, u8), Image<Rgb>> = {
+        let mut map = HashMap::new();
+
+        for file in read_dir("./assets/minecraft").unwrap() {
+            let block = Image::<Rgb>::open(file.unwrap().path())
+                .unwrap();
+            let pixel = block.clone()
+                .resized(1, 1, ResizeAlgorithm::Bilinear);
+            let pixel = pixel.pixel(1, 1);
+
+            map.insert(
+                pixel.as_rgb_tuple(),
+                block.resized(MCSIZE, MCSIZE, ResizeAlgorithm::Bilinear),
+            );
+        }
+
+        map
+    };
+
+    static ref MC_SAMPLE: Vec<(u8, u8, u8)> = MC_IMAGES
+        .keys()
+        .copied()
+        .collect();
+
 }
 
 /// helper function for lego to colorize the lego brick
@@ -31,6 +62,18 @@ fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
 
         L::new(value as u8)
     })
+}
+
+/// helper function to determine the closest color in the sample to the target pixel
+fn get_closest_color(target: (u8, u8, u8)) -> (u8, u8, u8) {
+    MC_SAMPLE.iter()
+        .min_by_key(|color|
+            color.0.abs_diff(target.0) +
+            color.1.abs_diff(target.1) +
+            color.2.abs_diff(target.2)
+        )
+        .cloned()
+        .unwrap()
 }
 
 /// resizes an image to a certain size, using the longest side, maintains aspect ratio
@@ -70,6 +113,39 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> 
                         colorize_lego_band(b, pixel.b as i32),
                         Image::new(30, 30, L::new(pixel.a))
                     ))
+                });
+            }
+            x += 30;
+        }
+        x = 0;
+        y += 30;
+    }
+
+    base
+}
+
+/// builds an image out of minecraft blocks
+pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> {
+    let (mut x, mut y) = (0u32, 0u32);
+    let image = resize_to(
+        image,
+        size.unwrap_or(70) as u32
+    );
+    let mut base = Image::<Rgba>::new(
+        image.width() * MCSIZE,
+        image.height() * MCSIZE,
+        Rgba::transparent(),
+    );
+
+    for row in image.pixels() {
+        for pixel in row {
+            if pixel.a != 0 {
+                base.paste(x, y, {
+                    let color = get_closest_color(pixel.as_rgb_tuple());
+                    MC_IMAGES.get(&color)
+                        .unwrap()
+                        .clone()
+                        .convert()
                 });
             }
             x += 30;

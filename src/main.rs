@@ -37,6 +37,7 @@ async fn run(app: Router<Body>, port: Option<u16>) {
 async fn main() {
     let app: Router<Body> = Router::new()
         .route("/lego", post(wrap!(functions::lego, models::SizeOption)))
+        .route("/minecraft", post(wrap!(functions::minecraft, models::SizeOption)))
         .fallback(
             get_service(functions::not_found.into_service())
                 .handle_error(|err| async move {

@@ -28,14 +28,14 @@ macro_rules! wrap_fn {
                     .map_err(wrapper::map_err)?
                 {
 
-                    if !field.content_type()
+                    /*if !field.content_type()
                         .map_or(false, |c| c.starts_with("image/"))
                     {
                         return Err((
                             StatusCode::UNSUPPORTED_MEDIA_TYPE,
                             "Only media of `image/` content type are supported".to_string()
                         ));
-                    }
+                    }*/
 
                     let mut size = 0;
                     let mut buffer = Vec::<u8>::new();

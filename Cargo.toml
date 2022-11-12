@@ -1,0 +1,11 @@
+[package]
+name = "image-web"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+lazy_static = "1.4"
+tokio = { version = "1.19", features = ["full"] }
+serde = { version = "1.0", features = ["derive"] }
+axum = { version = "0.5", features = ["headers", "multipart"] }
+ril = { git = "https://github.com/jay3332/ril", features = ["all"] }

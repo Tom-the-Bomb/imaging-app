@@ -18,16 +18,27 @@ lazy_static::lazy_static! {
         let mut map = HashMap::new();
 
         for file in read_dir("./assets/minecraft").unwrap() {
-            let block = Image::<Rgb>::open(file.unwrap().path())
-                .unwrap();
-            let pixel = block.clone()
-                .resized(1, 1, ResizeAlgorithm::Bilinear);
-            let pixel = pixel.pixel(1, 1);
+            let file = file.unwrap();
 
-            map.insert(
-                pixel.as_rgb_tuple(),
-                block.resized(MCSIZE, MCSIZE, ResizeAlgorithm::Bilinear),
-            );
+            if file.file_name()
+                .into_string()
+                .map_or(false, |s| !s.ends_with(".png"))
+            {
+                continue;
+            }
+
+            if let Ok(block) =
+                Image::<Rgb>::open(file.path())
+            {
+                let pixel = block.clone()
+                    .resized(1, 1, ResizeAlgorithm::Bilinear);
+                let pixel = pixel.pixel(0, 0);
+
+                map.insert(
+                    pixel.as_rgb_tuple(),
+                    block.resized(MCSIZE, MCSIZE, ResizeAlgorithm::Bilinear),
+                );
+            }
         }
 
         map
@@ -148,10 +159,10 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<R
                         .convert()
                 });
             }
-            x += 30;
+            x += MCSIZE;
         }
         x = 0;
-        y += 30;
+        y += MCSIZE;
     }
 
     base

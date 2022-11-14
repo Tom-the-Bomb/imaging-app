@@ -8,7 +8,11 @@ use ril::prelude::*;
 use crate::models::*;
 
 
-const MCSIZE: u32 = 16;
+/// constant representing the pixel size of each lego brick
+const LEGO_SIZE: u32 = 30;
+
+/// constant representing the pixel size of each minecraft block
+const MCSIZE: u32 = 20;
 
 lazy_static::lazy_static! {
     static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
@@ -30,12 +34,10 @@ lazy_static::lazy_static! {
             if let Ok(block) =
                 Image::<Rgb>::open(file.path())
             {
-                let pixel = block.clone()
+                let single = block.clone()
                     .resized(1, 1, ResizeAlgorithm::Bilinear);
-                let pixel = pixel.pixel(0, 0);
-
                 map.insert(
-                    pixel.as_rgb_tuple(),
+                    single.pixel(0, 0).as_rgb_tuple(),
                     block.resized(MCSIZE, MCSIZE, ResizeAlgorithm::Bilinear),
                 );
             }
@@ -50,6 +52,7 @@ lazy_static::lazy_static! {
         .collect();
 
 }
+
 
 /// helper function for lego to colorize the lego brick
 /// with each pixel's color in the image
@@ -79,9 +82,9 @@ fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
 fn get_closest_color(target: (u8, u8, u8)) -> (u8, u8, u8) {
     MC_SAMPLE.iter()
         .min_by_key(|color|
-            color.0.abs_diff(target.0) +
-            color.1.abs_diff(target.1) +
-            color.2.abs_diff(target.2)
+            color.0.abs_diff(target.0) as u32 +
+            color.1.abs_diff(target.1) as u32 +
+            color.2.abs_diff(target.2) as u32
         )
         .cloned()
         .unwrap()
@@ -108,8 +111,8 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> 
         size.unwrap_or(40) as u32
     );
     let mut base = Image::<Rgba>::new(
-        image.width() * 30,
-        image.height() * 30,
+        image.width() * LEGO_SIZE,
+        image.height() * LEGO_SIZE,
         Rgba::transparent(),
     );
 
@@ -122,14 +125,14 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> 
                         colorize_lego_band(r, pixel.r as i32),
                         colorize_lego_band(g, pixel.g as i32),
                         colorize_lego_band(b, pixel.b as i32),
-                        Image::new(30, 30, L::new(pixel.a))
+                        Image::new(LEGO_SIZE, LEGO_SIZE, L::new(pixel.a))
                     ))
                 });
             }
-            x += 30;
+            x += LEGO_SIZE;
         }
         x = 0;
-        y += 30;
+        y += LEGO_SIZE;
     }
 
     base

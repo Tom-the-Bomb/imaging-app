@@ -104,6 +104,7 @@ fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
 }
 
 /// builds an image out of lego blocks
+/// of provided `size`, defaulting to 40 blocks
 pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> {
     let (mut x, mut y) = (0u32, 0u32);
     let image = resize_to(
@@ -118,7 +119,7 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> 
 
     for row in image.pixels() {
         for pixel in row {
-            if pixel.a != 0 {
+            if pixel.a > 0 {
                 base.paste(x, y, {
                     let (r, g, b) = LEGO.bands();
                     Image::from_bands((
@@ -139,6 +140,7 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> 
 }
 
 /// builds an image out of minecraft blocks
+/// of provided `size`, defaulting to 70 blocks
 pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> {
     let (mut x, mut y) = (0u32, 0u32);
     let image = resize_to(
@@ -153,7 +155,7 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<R
 
     for row in image.pixels() {
         for pixel in row {
-            if pixel.a != 0 {
+            if pixel.a > 0 {
                 base.paste(x, y, {
                     let color = get_closest_color(pixel.as_rgb_tuple());
                     MC_IMAGES.get(&color)

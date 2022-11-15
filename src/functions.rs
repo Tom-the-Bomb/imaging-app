@@ -18,7 +18,8 @@ lazy_static::lazy_static! {
     static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
         .unwrap();
 
-    static ref MC_IMAGES: HashMap<(u8, u8, u8), Image<Rgb>> = {
+    static ref MC_IMAGES: HashMap<(u8, u8, u8, u8), Image<Rgba>> = {
+        let mut failed = 0;
         let mut map = HashMap::new();
 
         for file in read_dir("./assets/minecraft").unwrap() {
@@ -32,21 +33,25 @@ lazy_static::lazy_static! {
             }
 
             if let Ok(block) =
-                Image::<Rgb>::open(file.path())
+                Image::<Rgba>::open(file.path())
             {
                 let single = block.clone()
                     .resized(1, 1, ResizeAlgorithm::Bilinear);
                 map.insert(
-                    single.pixel(0, 0).as_rgb_tuple(),
+                    single.pixel(0, 0).as_rgba_tuple(),
                     block.resized(MCSIZE, MCSIZE, ResizeAlgorithm::Bilinear),
                 );
+            } else {
+                failed += 1;
             }
         }
 
+        println!("Loaded {} minecraft blocks", map.len());
+        println!("Failed to load {} images", failed);
         map
     };
 
-    static ref MC_SAMPLE: Vec<(u8, u8, u8)> = MC_IMAGES
+    static ref MC_SAMPLE: Vec<(u8, u8, u8, u8)> = MC_IMAGES
         .keys()
         .copied()
         .collect();
@@ -79,12 +84,13 @@ fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
 }
 
 /// helper function to determine the closest color in the sample to the target pixel
-fn get_closest_color(target: (u8, u8, u8)) -> (u8, u8, u8) {
+fn get_closest_color(target: &Rgba) -> (u8, u8, u8, u8) {
     MC_SAMPLE.iter()
         .min_by_key(|color|
-            color.0.abs_diff(target.0) as u32 +
-            color.1.abs_diff(target.1) as u32 +
-            color.2.abs_diff(target.2) as u32
+            color.0.abs_diff(target.r) as u32 +
+            color.1.abs_diff(target.g) as u32 +
+            color.2.abs_diff(target.b) as u32 +
+            color.3.abs_diff(target.a) as u32
         )
         .cloned()
         .unwrap()
@@ -157,7 +163,7 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<R
         for pixel in row {
             if pixel.a > 0 {
                 base.paste(x, y, {
-                    let color = get_closest_color(pixel.as_rgb_tuple());
+                    let color = get_closest_color(pixel);
                     MC_IMAGES.get(&color)
                         .unwrap()
                         .clone()

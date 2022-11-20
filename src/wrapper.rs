@@ -52,7 +52,7 @@ macro_rules! wrap_fn {
                                 .into_sequence()?
                                 .into_first_image();
 
-                            let image = $function(image, query);
+                            let image = $function(image, query)?;
                             let mut bytes = Vec::<u8>::new();
                             image.encode(ImageFormat::Png, &mut bytes)?;
 

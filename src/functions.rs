@@ -1,11 +1,14 @@
+//! File containing all processing functions for indivdual endpoints
+
 use axum::{
     http::StatusCode,
     response::{IntoResponse, Response},
 };
 use std::collections::HashMap;
 use std::fs::read_dir;
+use photon_rs::effects;
 use ril::prelude::*;
-use crate::models::*;
+use crate::{helpers::*, models::*};
 
 
 /// constant representing the pixel size of each lego brick
@@ -13,6 +16,9 @@ const LEGO_SIZE: u32 = 30;
 
 /// constant representing the pixel size of each minecraft block
 const MCSIZE: u32 = 20;
+
+/// shortcut typealias for return type of all functions
+type R = ril::Result<Image<Rgba>>;
 
 lazy_static::lazy_static! {
     static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
@@ -59,59 +65,9 @@ lazy_static::lazy_static! {
 }
 
 
-/// helper function for lego to colorize the lego brick
-/// with each pixel's color in the image
-fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
-    image.map_pixels(|p| {
-        let p = p.value() as i32;
-
-        let mut value = if p < 33 {
-            value - 100
-        } else if p > 233 {
-            value + 100
-        } else {
-            value - 133 + p
-        };
-
-        if value < 0 {
-            value = 0;
-        } else if value > 255 {
-            value = 255;
-        }
-
-        L::new(value as u8)
-    })
-}
-
-/// helper function to determine the closest color in the sample to the target pixel
-fn get_closest_color(target: &Rgba) -> (u8, u8, u8, u8) {
-    MC_SAMPLE.iter()
-        .min_by_key(|color|
-            color.0.abs_diff(target.r) as u32 +
-            color.1.abs_diff(target.g) as u32 +
-            color.2.abs_diff(target.b) as u32 +
-            color.3.abs_diff(target.a) as u32
-        )
-        .cloned()
-        .unwrap()
-}
-
-/// resizes an image to a certain size, using the longest side, maintains aspect ratio
-fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
-    let (w, h) = image.dimensions();
-    let (width, height) =
-        if w > h {
-            (size, ((size as f32 / w as f32) * h as f32).ceil() as u32)
-        } else {
-            (((size as f32 / h as f32) * w as f32).ceil() as u32, size)
-        };
-
-    image.resized(width, height, ResizeAlgorithm::Bilinear)
-}
-
 /// builds an image out of lego blocks
 /// of provided `size`, defaulting to 40 blocks
-pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> {
+pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
     let (mut x, mut y) = (0u32, 0u32);
     let image = resize_to(
         image,
@@ -142,12 +98,12 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> 
         y += LEGO_SIZE;
     }
 
-    base
+    Ok(base)
 }
 
 /// builds an image out of minecraft blocks
 /// of provided `size`, defaulting to 70 blocks
-pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<Rgba> {
+pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
     let (mut x, mut y) = (0u32, 0u32);
     let image = resize_to(
         image,
@@ -163,7 +119,16 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<R
         for pixel in row {
             if pixel.a > 0 {
                 base.paste(x, y, {
-                    let color = get_closest_color(pixel);
+                    let color = MC_SAMPLE.iter()
+                        .min_by_key(|color|
+                            color.0.abs_diff(pixel.r) as u32 +
+                            color.1.abs_diff(pixel.g) as u32 +
+                            color.2.abs_diff(pixel.b) as u32 +
+                            color.3.abs_diff(pixel.a) as u32
+                        )
+                        .cloned()
+                        .unwrap();
+
                     MC_IMAGES.get(&color)
                         .unwrap()
                         .clone()
@@ -176,7 +141,20 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> Image<R
         y += MCSIZE;
     }
 
-    base
+    Ok(base)
+}
+
+/// paints out an image
+pub fn paint(image: Image<Rgba>, IsGif { gif }: IsGif) -> R {
+    let mut img = to_photon(image)?;
+    effects::oil(&mut img, 4, 55.0);
+    let image = to_ril(img)?;
+
+    if gif.unwrap_or(true) {
+        todo!();
+    }
+
+    Ok(image)
 }
 
 /// WIP not found 404 fallback

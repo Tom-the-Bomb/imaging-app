@@ -23,6 +23,10 @@ type R = ril::Result<Image<Rgba>>;
 lazy_static::lazy_static! {
     static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
         .unwrap();
+    static ref BRUSH_MASK: ImageSequence<L> = ImageSequence::open("./assets/brush_mask.gif")
+        .unwrap()
+        .into_sequence()
+        .unwrap();
 
     static ref MC_IMAGES: HashMap<(u8, u8, u8, u8), Image<Rgba>> = {
         let mut failed = 0;
@@ -145,16 +149,33 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
 }
 
 /// paints out an image
-pub fn paint(image: Image<Rgba>, IsGif { gif }: IsGif) -> R {
+pub fn paint(image: Image<Rgba>, IsGif { gif }: IsGif) -> ril::Result<ImageSequence<Rgba>> {
     let mut img = to_photon(image)?;
     effects::oil(&mut img, 4, 55.0);
     let image = to_ril(img)?;
+    let mut seq = ImageSequence::<Rgba>::new();
 
     if gif.unwrap_or(true) {
-        todo!();
+        for frame in BRUSH_MASK.iter() {
+            let sized = frame
+                .clone()
+                .into_image()
+                .resized(
+                    image.width(),
+                    image.height(),
+                    ResizeAlgorithm::Lanczos3,
+                );
+
+            let mut masked = image.clone();
+            masked.mask_alpha(&sized);
+            seq.push_frame(Frame::from_image(masked));
+        }
+        println!("ok");
+    } else {
+        seq.push_frame(Frame::from_image(image))
     }
 
-    Ok(image)
+    Ok(seq)
 }
 
 /// WIP not found 404 fallback

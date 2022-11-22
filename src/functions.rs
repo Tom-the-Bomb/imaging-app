@@ -23,6 +23,7 @@ type R = ril::Result<Image<Rgba>>;
 lazy_static::lazy_static! {
     static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
         .unwrap();
+    // credit: (Jeyy) taken from https://github.com/JeyyGit/Jeyy-Bot/blob/main/image/brush_mask.gif
     static ref BRUSH_MASK: ImageSequence<L> = ImageSequence::open("./assets/brush_mask.gif")
         .unwrap()
         .into_sequence()
@@ -149,9 +150,11 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
 }
 
 /// paints out an image
+/// gif query parameter specifies whether or not to apply a painting animation
 pub fn paint(image: Image<Rgba>, IsGif { gif }: IsGif) -> ril::Result<ImageSequence<Rgba>> {
     let mut img = to_photon(image)?;
     effects::oil(&mut img, 4, 55.0);
+
     let image = to_ril(img)?;
     let mut seq = ImageSequence::<Rgba>::new();
 

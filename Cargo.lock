@@ -578,7 +578,6 @@ name = "image-web"
 version = "0.1.0"
 dependencies = [
  "axum",
- "base64",
  "lazy_static",
  "photon-rs",
  "ril",

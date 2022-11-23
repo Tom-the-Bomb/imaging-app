@@ -1,7 +1,6 @@
 //! File containing helper functions used by the
 //! individual processing functions for endpoints in `functions.rs`
-use base64::encode;
-use photon_rs::{native::image_to_bytes, base64_to_image, PhotonImage};
+use photon_rs::PhotonImage;
 use ril::prelude::*;
 
 /// helper function for lego to colorize the lego brick
@@ -44,14 +43,18 @@ pub fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
 pub fn to_photon(image: Image<Rgba>) -> ril::Result<PhotonImage> {
     let mut buffer = Vec::<u8>::new();
     image.encode(ImageFormat::Png, &mut buffer)?;
-    let base64 = encode(buffer);
 
-    Ok(base64_to_image(base64.as_str()))
+    Ok(PhotonImage::new_from_byteslice(buffer))
 }
 
-#[inline]
-pub fn to_ril(image: PhotonImage) -> ril::Result<Image<Rgba>> {
-    Image::from_bytes_inferred(
-        image_to_bytes(image)
+pub fn to_ril(image: PhotonImage) -> Image<Rgba> {
+    Image::<Rgba>::from_pixels(
+        image.get_width(),
+        {
+            image.get_raw_pixels()
+                .chunks_exact(4)
+                .map(|c| Rgba { r: c[0], g: c[1], b: c[2], a: c[3]})
+                .collect::<Vec<Rgba>>()
+        }
     )
 }

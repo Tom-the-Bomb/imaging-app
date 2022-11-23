@@ -153,9 +153,9 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
 /// gif query parameter specifies whether or not to apply a painting animation
 pub fn paint(image: Image<Rgba>, IsGif { gif }: IsGif) -> ril::Result<ImageSequence<Rgba>> {
     let mut img = to_photon(image)?;
-    effects::oil(&mut img, 4, 55.0);
+    effects::oil(&mut img, 5, 60.0);
 
-    let image = to_ril(img)?;
+    let image = to_ril(img);
     let mut seq = ImageSequence::<Rgba>::new();
 
     if gif.unwrap_or(true) {
@@ -173,7 +173,6 @@ pub fn paint(image: Image<Rgba>, IsGif { gif }: IsGif) -> ril::Result<ImageSeque
             masked.mask_alpha(&sized);
             seq.push_frame(Frame::from_image(masked));
         }
-        println!("ok");
     } else {
         seq.push_frame(Frame::from_image(image))
     }

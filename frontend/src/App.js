@@ -1,7 +1,8 @@
+
 function App() {
     return (
-        <div className="App">
-            test
+        <div className="text-center text-green-500">
+            Test
         </div>
     );
 }

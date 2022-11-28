@@ -2,6 +2,7 @@
 //! individual processing functions for endpoints in `functions.rs`
 use photon_rs::PhotonImage;
 use ril::prelude::*;
+use crate::braille_data::BRAILLE_DATA;
 
 /// helper function for lego to colorize the lego brick
 /// with each pixel's color in the image
@@ -40,6 +41,7 @@ pub fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
     image.resized(width, height, ResizeAlgorithm::Bilinear)
 }
 
+/// converts a RIL [`Image`] to a Photon-rs [`PhotonImage`]
 pub fn to_photon(image: Image<Rgba>) -> ril::Result<PhotonImage> {
     let mut buffer = Vec::<u8>::new();
     image.encode(ImageFormat::Png, &mut buffer)?;
@@ -47,6 +49,7 @@ pub fn to_photon(image: Image<Rgba>) -> ril::Result<PhotonImage> {
     Ok(PhotonImage::new_from_byteslice(buffer))
 }
 
+/// converts a Photon-rs [`PhotonImage`] to a RIL [`Image`]
 pub fn to_ril(image: PhotonImage) -> Image<Rgba> {
     Image::<Rgba>::from_pixels(
         image.get_width(),
@@ -57,4 +60,59 @@ pub fn to_ril(image: PhotonImage) -> Image<Rgba> {
                 .collect::<Vec<Rgba>>()
         }
     )
+}
+
+/// maps an image pixel value [`Rgba`] to a corresponding braille character
+pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, threshold: u32) -> Option<String> {
+    let mut region = vec![vec!["0", "0"]; 4];
+    let (width, height) = image.dimensions();
+    for i in x..x + 2 {
+        for j in y..y + 4 {
+            let mut gray: u32 = 0;
+
+            if !(i >= width || j >= height) {
+                gray = {
+                    let px = image.get_pixel(j, i)
+                        .unwrap();
+                    (px.r as u32 + px.b as u32 + px.g as u32) / 3
+                };
+            }
+            region[(j - y) as usize][(i - x) as usize] =
+                (gray < threshold)
+                    .then_some("0")
+                    .unwrap_or("1");
+        }
+    }
+
+    let key = region
+        .into_iter()
+        .map(|inner| inner.join(""))
+        .collect::<Vec<String>>()
+        .join(" ");
+
+    BRAILLE_DATA.get(&key)
+        .cloned()
+}
+
+/// fixes braille string spaces and padding at the end
+pub fn fix_braille_spaces(mut matrix: Vec<Vec<String>>, width: usize, height: usize) -> Vec<Vec<String>> {
+    for y in 0..height {
+        let mut last = width - 1;
+        for x in width + 1..=0 {
+            if matrix[y][x] != "." {
+                break
+            }
+            last = x;
+        }
+        matrix[y] = matrix[y][0..last]
+            .to_vec();
+    }
+    for y in 0..height {
+        for x in 0..matrix[y].len() {
+            if matrix[y][x] == "." {
+                matrix[y][x] = "⢀".to_string();
+            }
+        }
+    }
+    matrix
 }

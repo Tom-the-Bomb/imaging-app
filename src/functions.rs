@@ -8,7 +8,10 @@ use std::collections::HashMap;
 use std::fs::read_dir;
 use photon_rs::effects;
 use ril::prelude::*;
-use crate::{helpers::*, models::*};
+use crate::{
+    helpers::*,
+    models::*,
+};
 
 
 /// constant representing the pixel size of each lego brick
@@ -16,6 +19,9 @@ const LEGO_SIZE: u32 = 30;
 
 /// constant representing the pixel size of each minecraft block
 const MCSIZE: u32 = 20;
+
+/// constant representing threshold for braille conversion
+const THRESHOLD: u32 = 90;
 
 /// shortcut typealias for return type of all functions
 type R = ril::Result<Image<Rgba>>;
@@ -27,6 +33,8 @@ lazy_static::lazy_static! {
     static ref BRUSH_MASK: ImageSequence<L> = ImageSequence::open("./assets/brush_mask.gif")
         .unwrap()
         .into_sequence()
+        .unwrap();
+    static ref BRAILLE_FONT: Font = Font::open("./assets/braille.ttf", 30.0)
         .unwrap();
 
     static ref MC_IMAGES: HashMap<(u8, u8, u8, u8), Image<Rgba>> = {
@@ -150,34 +158,49 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
 }
 
 /// paints out an image
-/// gif query parameter specifies whether or not to apply a painting animation
-pub fn paint(image: Image<Rgba>, IsGif { gif }: IsGif) -> ril::Result<ImageSequence<Rgba>> {
+pub fn paint(image: Image<Rgba>, _: NoArgs) -> R {
     let mut img = to_photon(image)?;
     effects::oil(&mut img, 5, 60.0);
 
     let image = to_ril(img);
-    let mut seq = ImageSequence::<Rgba>::new();
+    Ok(image)
+}
 
-    if gif.unwrap_or(true) {
-        for frame in BRUSH_MASK.iter() {
-            let sized = frame
-                .clone()
-                .into_image()
-                .resized(
-                    image.width(),
-                    image.height(),
-                    ResizeAlgorithm::Lanczos3,
-                );
+pub fn braille(image: Image<Rgba>, _: NoArgs) -> R {
+    let w = (image.width() as f32 / 2.0).ceil() as usize;
+    let h = (image.height() as f32 / 4.0).ceil() as usize;
+    let mut mat = vec![vec![" ".to_string(); w]; h];
 
-            let mut masked = image.clone();
-            masked.mask_alpha(&sized);
-            seq.push_frame(Frame::from_image(masked));
+    for x in 0..w {
+        for y in 0..h {
+            mat[y][x] = get_braille_from_px(
+                (x * 2) as u32,
+                (y * 2) as u32,
+                &image, THRESHOLD,
+            ).unwrap_or_else(|| ".".to_string());
         }
-    } else {
-        seq.push_frame(Frame::from_image(image))
     }
+    mat = fix_braille_spaces(mat, w, h);
+    let text = mat
+        .into_iter()
+        .map(|inner| inner.join(""))
+        .collect::<Vec<String>>()
+        .join("\n");
 
-    Ok(seq)
+    let layout = TextLayout::new()
+        .with_basic_text(
+            &BRAILLE_FONT, text, Rgba::black()
+        )
+        .with_wrap(WrapStyle::None)
+        .with_position(0, 0);
+    let mut canvas = Image::<Rgba>::new(
+        1000,
+        1000,
+        Rgba::white()
+    );
+    canvas.draw(&layout);
+
+    Ok(canvas)
 }
 
 /// WIP not found 404 fallback

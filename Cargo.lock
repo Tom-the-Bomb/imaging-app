@@ -1208,7 +1208,7 @@ dependencies = [
 [[package]]
 name = "ril"
 version = "0.8.0"
-source = "git+https://github.com/jay3332/ril#066e06e5d5c2b6ba71550c0faefb361a4be9499c"
+source = "git+https://github.com/jay3332/ril#4d7511f1a74bf4390553702afffee390d669552a"
 dependencies = [
  "color_quant",
  "fast_image_resize",

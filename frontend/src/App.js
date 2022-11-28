@@ -1,7 +1,7 @@
 
 function App() {
     return (
-        <div className="text-center text-green-500">
+        <div className="flex bg-gray-900 h-screen">
             Test
         </div>
     );

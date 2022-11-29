@@ -26,11 +26,6 @@ type R = ril::Result<Image<Rgba>>;
 lazy_static::lazy_static! {
     static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
         .unwrap();
-    // credit: (Jeyy) taken from https://github.com/JeyyGit/Jeyy-Bot/blob/main/image/brush_mask.gif
-    static ref BRUSH_MASK: ImageSequence<L> = ImageSequence::open("./assets/brush_mask.gif")
-        .unwrap()
-        .into_sequence()
-        .unwrap();
     static ref BRAILLE_FONT: Font = Font::open("./assets/braille.ttf", 30.0)
         .unwrap();
 
@@ -163,6 +158,16 @@ pub fn paint(image: Image<Rgba>, _: NoArgs) -> R {
     Ok(image)
 }
 
+/// frosted glass effect?
+pub fn frost(image: Image<Rgba>, _: NoArgs) -> R {
+    let mut img = to_photon(image)?;
+    effects::frosted_glass(&mut img);
+
+    let image = to_ril(img);
+    Ok(image)
+}
+
+/// builds an image out of braille characters
 pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: BrailleOption) -> R {
     let image = resize_to(
         image,
@@ -179,7 +184,7 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
                 (y * 4) as u32,
                 &image,
                 invert.unwrap_or(false),
-                threshold.unwrap_or(70) as u32,
+                threshold.unwrap_or(90) as u32,
             ).unwrap_or_else(|| ".".to_string());
         }
     }
@@ -190,16 +195,15 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
         .collect::<Vec<String>>()
         .join("\n");
 
-    std::fs::write("./test.txt", &text).unwrap();
     let layout = TextLayout::new()
+        .with_wrap(WrapStyle::None)
+        .with_position(0, 0)
         .with_basic_text(
             &BRAILLE_FONT, text, Rgba::black()
-        )
-        .with_wrap(WrapStyle::None)
-        .with_position(0, 0);
+        );
     let mut canvas = Image::<Rgba>::new(
-        1000,
-        1000,
+        layout.width(),
+        layout.height(),
         Rgba::white()
     );
     canvas.draw(&layout);

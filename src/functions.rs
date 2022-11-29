@@ -20,9 +20,6 @@ const LEGO_SIZE: u32 = 30;
 /// constant representing the pixel size of each minecraft block
 const MCSIZE: u32 = 20;
 
-/// constant representing threshold for braille conversion
-const THRESHOLD: u32 = 90;
-
 /// shortcut typealias for return type of all functions
 type R = ril::Result<Image<Rgba>>;
 
@@ -166,7 +163,11 @@ pub fn paint(image: Image<Rgba>, _: NoArgs) -> R {
     Ok(image)
 }
 
-pub fn braille(image: Image<Rgba>, _: NoArgs) -> R {
+pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: BrailleOption) -> R {
+    let image = resize_to(
+        image,
+        size.unwrap_or(128) as u32
+    );
     let w = (image.width() as f32 / 2.0).ceil() as usize;
     let h = (image.height() as f32 / 4.0).ceil() as usize;
     let mut mat = vec![vec![" ".to_string(); w]; h];
@@ -175,8 +176,10 @@ pub fn braille(image: Image<Rgba>, _: NoArgs) -> R {
         for y in 0..h {
             mat[y][x] = get_braille_from_px(
                 (x * 2) as u32,
-                (y * 2) as u32,
-                &image, THRESHOLD,
+                (y * 4) as u32,
+                &image,
+                invert.unwrap_or(false),
+                threshold.unwrap_or(70) as u32,
             ).unwrap_or_else(|| ".".to_string());
         }
     }
@@ -187,6 +190,7 @@ pub fn braille(image: Image<Rgba>, _: NoArgs) -> R {
         .collect::<Vec<String>>()
         .join("\n");
 
+    std::fs::write("./test.txt", &text).unwrap();
     let layout = TextLayout::new()
         .with_basic_text(
             &BRAILLE_FONT, text, Rgba::black()

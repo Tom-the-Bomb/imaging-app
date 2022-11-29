@@ -63,7 +63,7 @@ pub fn to_ril(image: PhotonImage) -> Image<Rgba> {
 }
 
 /// maps an image pixel value [`Rgba`] to a corresponding braille character
-pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, threshold: u32) -> Option<String> {
+pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, invert: bool, threshold: u32) -> Option<String> {
     let mut region = vec![vec!["0", "0"]; 4];
     let (width, height) = image.dimensions();
     for i in x..x + 2 {
@@ -72,15 +72,15 @@ pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, threshold: u32) 
 
             if !(i >= width || j >= height) {
                 gray = {
-                    let px = image.get_pixel(j, i)
+                    let px = image.get_pixel(i, j)
                         .unwrap();
                     (px.r as u32 + px.b as u32 + px.g as u32) / 3
                 };
             }
             region[(j - y) as usize][(i - x) as usize] =
                 (gray < threshold)
-                    .then_some("0")
-                    .unwrap_or("1");
+                    .then_some(if invert { "1" } else { "0" })
+                    .unwrap_or_else(|| if invert { "0" } else { "1" });
         }
     }
 
@@ -98,9 +98,9 @@ pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, threshold: u32) 
 pub fn fix_braille_spaces(mut matrix: Vec<Vec<String>>, width: usize, height: usize) -> Vec<Vec<String>> {
     for y in 0..height {
         let mut last = width - 1;
-        for x in width + 1..=0 {
+        for x in (0..width).rev() {
             if matrix[y][x] != "." {
-                break
+                break;
             }
             last = x;
         }

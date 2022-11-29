@@ -41,7 +41,7 @@ async fn main() {
         .route("/lego", post(wrap!(functions::lego, models::SizeOption)))
         .route("/minecraft", post(wrap!(functions::minecraft, models::SizeOption)))
         .route("/paint", post(wrap!(functions::paint, models::NoArgs)))
-        .route("/braille", post(wrap!(functions::braille, models::NoArgs)))
+        .route("/braille", post(wrap!(functions::braille, models::BrailleOption)))
         .fallback(
             get_service(functions::not_found.into_service())
                 .handle_error(|err| async move {

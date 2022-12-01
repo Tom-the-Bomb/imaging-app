@@ -5,24 +5,38 @@
 }
 
 body {
+    display: grid;
     margin: 0px;
+    padding: 0px;
     background-color: rgb(40, 40, 60);
-    min-height: 100vh;
+    height: 100vh;
 }
 
 main {
     display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 nav {
+    position: fixed;
+    align-self: top;
     width: 100vw;
     padding: 0.5em;
     text-align: center;
     background-color: rgb(50, 50, 70);
     font-family: var(--main-font);
     color: white;
+}
+
+footer {
+    text-align: center;
+    padding: 1em;
+    font-family: monospace;
+    color: rgb(210, 170, 170);
+    position: fixed;
+    bottom: 0;
+    height: 9em;
+    background-color: rgb(25, 25, 40);
+    width: 100vw;
 }
 
 #upload {
@@ -37,6 +51,7 @@ nav {
     align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
+    left: 10px;
 }
 
 .upload-container label {
@@ -46,7 +61,7 @@ nav {
     height: 4em;
     border-radius: 1em;
     background: linear-gradient(40deg, #862d64, #8b86e4);
-    box-shadow: 4px 7px 7px rgba(77, 3, 3, 0.4);
+    box-shadow: 4px 7px 7px rgba(20, 5, 5, 0.5);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,13 +70,23 @@ nav {
     font-family: var(--main-font);
     cursor: pointer;
     transition: ease-out 0.3s;
-  }
+}
 
 #upload:hover + label,
 #upload:focus + label {
-    transform: scale(1.05);
+    transform: scale(1.07);
 }
 
 #upload:focus + label {
     outline: 2px solid rgb(81, 88, 222);
+}
+
+.footer-logo {
+    width: 40px;
+    margin: 1em;
+    margin-top: 1.5em;
+}
+
+.footer-logo:hover {
+    filter: brightness(150%);
 }

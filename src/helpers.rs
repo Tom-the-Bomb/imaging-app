@@ -28,6 +28,28 @@ pub fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
     })
 }
 
+/// grayscales a pixel
+pub fn grayscale(px: &Rgba) -> u32 {
+    (px.r as u32 + px.b as u32 + px.g as u32) / 3
+}
+
+/// helper function to quickly write text on a blank image
+pub fn draw_text(font: &Font, text: String) -> Image<Rgba> {
+    let layout = TextLayout::new()
+        .with_wrap(WrapStyle::None)
+        .with_position(0, 0)
+        .with_basic_text(
+            font, text, Rgba::black()
+        );
+    let mut canvas = Image::<Rgba>::new(
+        layout.width(),
+        layout.height(),
+        Rgba::white()
+    );
+    canvas.draw(&layout);
+    canvas
+}
+
 /// resizes an image to a certain size, using the longest side, maintains aspect ratio
 pub fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
     let (w, h) = image.dimensions();
@@ -74,7 +96,7 @@ pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, invert: bool, th
                 gray = {
                     let px = image.get_pixel(i, j)
                         .unwrap();
-                    (px.r as u32 + px.b as u32 + px.g as u32) / 3
+                    grayscale(px)
                 };
             }
             region[(j - y) as usize][(i - x) as usize] =

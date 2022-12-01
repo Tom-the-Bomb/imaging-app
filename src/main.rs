@@ -59,6 +59,7 @@ async fn main() {
         .route("/paint", post(wrap!(functions::paint, models::NoArgs)))
         .route("/frost", post(wrap!(functions::frost, models::NoArgs)))
         .route("/braille", post(wrap!(functions::braille, models::BrailleOption)))
+        .route("/ascii", post(wrap!(functions::ascii, models::AsciiOption)))
         .fallback(
             get_service(
                 ServeDir::new("./frontend/")

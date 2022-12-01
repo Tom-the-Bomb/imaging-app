@@ -20,11 +20,25 @@ const MCSIZE: u32 = 20;
 type R = ril::Result<Image<Rgba>>;
 
 lazy_static::lazy_static! {
+    /// gray lego brick asset
     static ref LEGO: Image<Rgb> = Image::open("./assets/lego.png")
         .unwrap();
-    static ref BRAILLE_FONT: Font = Font::open("./assets/braille.ttf", 30.0)
+    /// unicode font used for `braille` (supports braille glyphs)
+    static ref UNICODE_FONT: Font = Font::open("./assets/unicode.ttf", 30.0)
         .unwrap();
+    /// monospace font used for `ascii` (equal in spacing)
+    static ref MONOSPACE_FONT: Font = Font::open("./assets/monospace.ttf", 30.0)
+        .unwrap();
+    /// constant storing all the characters used in the `ascii` function
+    static ref ASCII_CHARS: Vec<&'static str> = vec![
+        "$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k",
+        "b", "d", "p", "q", "w", "m", "Z", "O", "0", "Q", "L", "C", "J", "U",
+        "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t", "/", r"\",
+        "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<",
+        ">", "i", "!", "l", "I", ";", ":", ",", r"\", "^", "`", r#"""#, ".", " ",
+    ];
 
+    /// mapping containing all minecraft assets stored as (color: image) pairs
     static ref MC_IMAGES: HashMap<(u8, u8, u8, u8), Image<Rgba>> = {
         let mut failed = 0;
         let mut map = HashMap::new();
@@ -58,6 +72,7 @@ lazy_static::lazy_static! {
         map
     };
 
+    /// a collection of all colors (palette) of the minecraft assets
     static ref MC_SAMPLE: Vec<(u8, u8, u8, u8)> = MC_IMAGES
         .keys()
         .copied()
@@ -191,18 +206,34 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
         .collect::<Vec<String>>()
         .join("\n");
 
-    let layout = TextLayout::new()
-        .with_wrap(WrapStyle::None)
-        .with_position(0, 0)
-        .with_basic_text(
-            &BRAILLE_FONT, text, Rgba::black()
-        );
-    let mut canvas = Image::<Rgba>::new(
-        layout.width(),
-        layout.height(),
-        Rgba::white()
-    );
-    canvas.draw(&layout);
+    let canvas = draw_text(&UNICODE_FONT, text);
+    Ok(canvas)
+}
 
+pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R {
+    let mut image = resize_to(
+        image,
+        size.unwrap_or(90) as u32
+    );
+    if invert.unwrap_or(false) {
+        image.invert();
+    }
+
+    let mut text = String::new();
+    for row in image.pixels() {
+        for pixel in row {
+            let gray = grayscale(pixel);
+            let idx: usize;
+            if gray == 0 {
+                idx = ASCII_CHARS.len() - 1;
+            } else {
+                idx = gray as usize % ASCII_CHARS.len();
+            }
+
+            text.push_str(ASCII_CHARS[idx]);
+        }
+        text.push_str("\n");
+    }
+    let canvas = draw_text(&MONOSPACE_FONT, text);
     Ok(canvas)
 }

@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Acme&display=swap');
+
+:root {
+    --main-font: "Acme", "cursive", "monospace";
+}
+
+body {
+    margin: 0px;
+    background-color: rgb(40, 40, 60);
+    min-height: 100vh;
+}
+
+main {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+nav {
+    width: 100vw;
+    padding: 0.5em;
+    text-align: center;
+    background-color: rgb(50, 50, 70);
+    font-family: var(--main-font);
+    color: white;
+}
+
+#upload {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+}
+
+.upload-container {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+.upload-container label {
+    display: block;
+    position: relative;
+    width: 8em;
+    height: 4em;
+    border-radius: 1em;
+    background: linear-gradient(40deg, #862d64, #8b86e4);
+    box-shadow: 4px 7px 7px rgba(77, 3, 3, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5em;
+    font-family: var(--main-font);
+    cursor: pointer;
+    transition: ease-out 0.3s;
+  }
+
+#upload:hover + label,
+#upload:focus + label {
+    transform: scale(1.05);
+}
+
+#upload:focus + label {
+    outline: 2px solid rgb(81, 88, 222);
+}

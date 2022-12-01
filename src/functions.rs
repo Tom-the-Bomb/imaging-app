@@ -1,9 +1,5 @@
 //! File containing all processing functions for indivdual endpoints
 
-use axum::{
-    http::StatusCode,
-    response::{IntoResponse, Response},
-};
 use std::collections::HashMap;
 use std::fs::read_dir;
 use photon_rs::effects;
@@ -209,9 +205,4 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
     canvas.draw(&layout);
 
     Ok(canvas)
-}
-
-/// WIP not found 404 fallback
-pub async fn not_found() -> Response {
-    (StatusCode::NOT_FOUND, "404 not found").into_response()
 }

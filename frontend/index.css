@@ -1,7 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Acme&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Klee+One&display=swap');
 
 :root {
-    --main-font: "Acme", "cursive", "monospace";
+    --main-font: "Klee One", "cursive", "monospace";
 }
 
 body {
@@ -27,6 +27,10 @@ nav {
     color: white;
 }
 
+a {
+    text-decoration: none;
+}
+
 footer {
     text-align: center;
     padding: 1em;
@@ -47,6 +51,7 @@ footer {
 }
 
 .upload-container {
+    margin-left: 20%;
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
@@ -57,10 +62,10 @@ footer {
 .upload-container label {
     display: block;
     position: relative;
-    width: 8em;
-    height: 4em;
+    width: 10em;
+    height: 5em;
     border-radius: 1em;
-    background: linear-gradient(40deg, #862d64, #8b86e4);
+    background: linear-gradient(40deg, #2d2543, #5f5d8d);
     box-shadow: 4px 7px 7px rgba(20, 5, 5, 0.5);
     display: flex;
     align-items: center;
@@ -79,6 +84,15 @@ footer {
 
 #upload:focus + label {
     outline: 2px solid rgb(81, 88, 222);
+}
+
+#output {
+    position: absolute;
+    left: 50vw;
+    width: 200px;
+    height: 200px;
+    border-radius: 10%;
+    background-color:rgb(27, 28, 42);
 }
 
 .footer-logo {

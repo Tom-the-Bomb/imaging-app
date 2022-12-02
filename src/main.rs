@@ -2,7 +2,7 @@ use axum::{
     body::Body,
     handler::Handler,
     http::StatusCode,
-    routing::{get_service, post},
+    routing::{get_service, get, post},
     response::{Html, IntoResponse, Response},
     Router,
 };
@@ -54,6 +54,7 @@ pub async fn root() -> Html<String> {
 #[tokio::main]
 async fn main() {
     let app: Router<Body> = Router::new()
+        .route("/", get(root))
         .route("/lego", post(wrap!(functions::lego, models::SizeOption)))
         .route("/minecraft", post(wrap!(functions::minecraft, models::SizeOption)))
         .route("/paint", post(wrap!(functions::paint, models::NoArgs)))

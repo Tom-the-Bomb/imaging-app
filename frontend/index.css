@@ -5,7 +5,7 @@
 :root {
     --main-font: "Righteous", "cursive";
     --btn-font: "Nerko One", "cursive";
-    --submit-font: "Ubuntu", "sans-serif";
+    --text-font: "Ubuntu", "sans-serif";
 }
 
 a {
@@ -27,6 +27,7 @@ main {
 }
 
 nav {
+    z-index: 1;
     position: fixed;
     align-self: top;
     width: 100vw;
@@ -53,16 +54,33 @@ footer {
     box-shadow: 4px 7px 7px rgba(20, 5, 5, 0.5);
 }
 
+.lg-shadow {
+    box-shadow: 7px 10px 10px rgb(25, 24, 34);
+}
+
 #form {
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 20em;
-    height: 20em;
     padding: 2em;
     border-radius: 1em;
-    margin-right: 10em;
+    margin-right: 9em;
     background-color: rgb(27, 28, 42);
+}
+
+.form-header {
+    font-family: var(--main-font);
+    color: rgb(181, 174, 174);
+}
+
+.sm {
+    font-size: 0.6em;
+    font-family: var(--text-font);
+}
+
+.upload-container {
+    margin-top: 3em;
 }
 
 .upload-container label {
@@ -70,10 +88,11 @@ footer {
     position: relative;
     width: 10em;
     height: 5em;
-    border-radius: 1em;
+    border-radius: 0.7em;
     background: linear-gradient(40deg, #2d2543, #5f5d8d);
 
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     color: white;
@@ -99,33 +118,20 @@ footer {
     outline: 2px solid rgb(81, 88, 222);
 }
 
-#submit {
-    width: 8em;
-    height: 4em;
+#function-select {
     margin-top: 1em;
-    text-align: center;
-    font-family: var(--submit-font);
-    background-color: rgb(96, 113, 102);
     border: none;
-    border-radius: 1em;
-    color: rgb(243, 226, 226);
-    transition: ease-out 0.3s;
-}
-
-#submit:hover,
-#submit:focus {
-    transform: scale(1.05);
-}
-
-#submit:focus {
-    outline: 2px solid rgb(75, 182, 132);
+    border-radius: 0.5em;
+    font-family: var(--text-font);
+    color: rgb(191, 176, 176);
+    background-color: rgb(88, 73, 100);
 }
 
 #output {
     width: 300px;
     height: 300px;
     border-radius: 10%;
-    margin-left: 10em;
+    margin-left: 9em;
     border: dashed rgb(59, 64, 107);
     background-color:rgb(46, 48, 65);
 
@@ -136,6 +142,10 @@ footer {
     font-family: monospace;
     font-size: 1.2em;
     color: rgb(133, 122, 144)
+}
+
+#output-image {
+    height: 300px;
 }
 
 .footer-logo {

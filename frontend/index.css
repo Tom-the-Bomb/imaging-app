@@ -1,11 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Klee+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nerko+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:wght@300&display=swap');
 
 :root {
-    --main-font: "Klee One", "cursive", "monospace";
+    --main-font: "Righteous", "cursive";
+    --btn-font: "Nerko One", "cursive";
+    --submit-font: "Ubuntu", "sans-serif";
+}
+
+a {
+    text-decoration: none;
 }
 
 body {
-    display: grid;
     margin: 0px;
     padding: 0px;
     background-color: rgb(40, 40, 60);
@@ -14,21 +21,20 @@ body {
 
 main {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
 }
 
 nav {
     position: fixed;
     align-self: top;
     width: 100vw;
-    padding: 0.5em;
+    padding: 1em;
     text-align: center;
     background-color: rgb(50, 50, 70);
     font-family: var(--main-font);
     color: white;
-}
-
-a {
-    text-decoration: none;
 }
 
 footer {
@@ -43,20 +49,20 @@ footer {
     width: 100vw;
 }
 
-#upload {
-    opacity: 0;
-    width: 0.1px;
-    height: 0.1px;
-    position: absolute;
+.shadow {
+    box-shadow: 4px 7px 7px rgba(20, 5, 5, 0.5);
 }
 
-.upload-container {
-    margin-left: 20%;
+#form {
     display: flex;
-    align-items: flex-start;
-    justify-content: flex-start;
-    width: 100%;
-    left: 10px;
+    flex-direction: column;
+    justify-content: center;
+    width: 20em;
+    height: 20em;
+    padding: 2em;
+    border-radius: 1em;
+    margin-right: 10em;
+    background-color: rgb(27, 28, 42);
 }
 
 .upload-container label {
@@ -66,33 +72,70 @@ footer {
     height: 5em;
     border-radius: 1em;
     background: linear-gradient(40deg, #2d2543, #5f5d8d);
-    box-shadow: 4px 7px 7px rgba(20, 5, 5, 0.5);
+
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
     font-size: 1.5em;
-    font-family: var(--main-font);
+    font-family: var(--btn-font);
     cursor: pointer;
     transition: ease-out 0.3s;
 }
 
+#upload {
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+    position: absolute;
+}
+
 #upload:hover + label,
 #upload:focus + label {
-    transform: scale(1.07);
+    transform: scale(1.05);
 }
 
 #upload:focus + label {
     outline: 2px solid rgb(81, 88, 222);
 }
 
+#submit {
+    width: 8em;
+    height: 4em;
+    margin-top: 1em;
+    text-align: center;
+    font-family: var(--submit-font);
+    background-color: rgb(96, 113, 102);
+    border: none;
+    border-radius: 1em;
+    color: rgb(243, 226, 226);
+    transition: ease-out 0.3s;
+}
+
+#submit:hover,
+#submit:focus {
+    transform: scale(1.05);
+}
+
+#submit:focus {
+    outline: 2px solid rgb(75, 182, 132);
+}
+
 #output {
-    position: absolute;
-    left: 50vw;
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
     border-radius: 10%;
-    background-color:rgb(27, 28, 42);
+    margin-left: 10em;
+    border: dashed rgb(59, 64, 107);
+    background-color:rgb(46, 48, 65);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-family: monospace;
+    font-size: 1.2em;
+    color: rgb(133, 122, 144)
 }
 
 .footer-logo {

@@ -16,6 +16,7 @@ body {
     margin: 0px;
     padding: 0px;
     background-image: url('assets/background.svg');
+    background-color: rgb(40, 40, 60);
     height: 100vh;
 }
 
@@ -46,7 +47,7 @@ footer {
     position: fixed;
     bottom: 0;
     height: 9em;
-    background-color: rgb(25, 25, 40);
+    background-color: rgb(19, 19, 33);
     width: 100vw;
 }
 
@@ -55,7 +56,11 @@ footer {
 }
 
 .lg-shadow {
-    box-shadow: 7px 10px 10px rgb(25, 24, 34);
+    box-shadow: 10px 10px 10px rgb(24, 24, 33);
+}
+
+.lg-shadow:hover {
+    box-shadow: 13px 13px 10px rgb(24, 24, 33);
 }
 
 #form {
@@ -66,7 +71,7 @@ footer {
     padding: 2em;
     border-radius: 1em;
     margin-right: 9em;
-    background-color: rgb(27, 28, 42);
+    background-color: rgb(30, 31, 48);
 }
 
 .form-header {

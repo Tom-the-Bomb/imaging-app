@@ -18,29 +18,38 @@
             </nav>
         </header>
         <main>
-            <div id="form" class="lg-shadow">
-                <h4 class="form-header">Process Image</h4>
-                <div>
-                    <select class="form-select" id="function-select">
-                        <option selected disabled hidden>Select a function</option>
-                        <option value="lego">lego</option>
-                        <option value="minecraft">minecraft</option>
-                        <option value="braille">braille</option>
-                        <option value="ascii">ASCII</option>
-                        <option value="paint">paint</option>
-                        <option value="frost">frost</option>
-                    </select>
-                </div>
-                <div class="upload-container">
-                    <input id="upload" type="file" accept="image/*"/>
-                    <label id="upload-label" for="upload" class="shadow">
-                        Upload Image
-                        <div class="sm">(or drop / paste)</div>
-                    </label>
-                </div>
+            <div id="form" class="lg-shadow" onsubmit="formHandler(event)">
+                <form class="needs-validation" novalidate>
+                    <h4 class="form-header">Process Image</h4>
+                    <div>
+                        <select class="form-select" id="function-select" required>
+                            <option selected disabled value="">Select a function</option>
+                            <option value="lego">lego</option>
+                            <option value="minecraft">minecraft</option>
+                            <option value="braille">braille</option>
+                            <option value="ascii">ASCII</option>
+                            <option value="paint">paint</option>
+                            <option value="frost">frost</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a function
+                        </div>
+                    </div>
+                    <div class="upload-container">
+                        <input id="upload" type="file" accept="image/*" required/>
+                        <label id="upload-label" for="upload" class="shadow">
+                            Upload Image
+                            <div class="sm">(or drop / paste)</div>
+                        </label>
+                        <div class="invalid-feedback">
+                            Please upload a valid image
+                        </div>
+                    </div>
+                    <input class="shadow" id="submit" type="submit">
+                </form>
             </div>
             <div id="output-container">
-                <div class="lg-shadow" id="output">Output Image</div>
+                <div class="lg-shadow" id="output-placeholder">Output Image</div>
             </div>
         </main>
         <footer>

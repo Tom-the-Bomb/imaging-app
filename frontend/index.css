@@ -15,7 +15,7 @@ a {
 body {
     margin: 0px;
     padding: 0px;
-    background-color: rgb(40, 40, 60);
+    background-image: url('assets/background.svg');
     height: 100vh;
 }
 
@@ -80,7 +80,7 @@ footer {
 }
 
 .upload-container {
-    margin-top: 3em;
+    margin-top: 1.2em;
 }
 
 .upload-container label {
@@ -127,7 +127,33 @@ footer {
     background-color: rgb(88, 73, 100);
 }
 
-#output {
+#submit {
+    width: 8em;
+    height: 4em;
+    margin-top: 3em;
+    text-align: center;
+    font-family: var(--submit-font);
+    background-color: rgb(96, 113, 102);
+    border: none;
+    border-radius: 1em;
+    color: rgb(243, 226, 226);
+    transition: ease-out 0.3s;
+}
+
+#submit:hover,
+#submit:focus {
+    transform: scale(1.05);
+}
+
+#submit:focus {
+    outline: 2px solid rgb(75, 182, 132);
+}
+
+#output-container {
+    margin-left: 9em;
+}
+
+#output-placeholder {
     width: 300px;
     height: 300px;
     border-radius: 10%;
@@ -145,7 +171,31 @@ footer {
 }
 
 #output-image {
-    height: 300px;
+    border-radius: 1em;
+    height: 350px;
+}
+
+.loading {
+    margin: auto;
+    border: 20px solid #8fa3b8;
+    border-radius: 50%;
+    border-top: 20px solid #6c5482;
+    width: 120px;
+    height: 120px;
+    animation: spinner 4s linear infinite;
+}
+
+@keyframes spinner {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+#processing {
+    font-family: var(--text-font);
+    color: rgb(181, 174, 189);
+    text-align: center;
+    font-size: 1em;
+    margin: 1em;
 }
 
 .footer-logo {

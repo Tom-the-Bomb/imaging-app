@@ -31,11 +31,7 @@ lazy_static::lazy_static! {
         .unwrap();
     /// constant storing all the characters used in the `ascii` function
     static ref ASCII_CHARS: Vec<&'static str> = vec![
-        "$", "@", "B", "%", "8", "&", "W", "M", "#", "*", "o", "a", "h", "k",
-        "b", "d", "p", "q", "w", "m", "Z", "O", "0", "Q", "L", "C", "J", "U",
-        "Y", "X", "z", "c", "v", "u", "n", "x", "r", "j", "f", "t", "/", r"\",
-        "|", "(", ")", "1", "{", "}", "[", "]", "?", "-", "_", "+", "~", "<",
-        ">", "i", "!", "l", "I", ";", ":", ",", r"\", "^", "`", r#"""#, ".", " ",
+        "@", "#", "S", "%", "?", "*", "+", ";", ":", ",", ".", " "
     ];
 
     /// mapping containing all minecraft assets stored as (color: image) pairs
@@ -210,27 +206,20 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
     Ok(canvas)
 }
 
+/// builds an image out of ascii punctuation characters
 pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R {
-    let mut image = resize_to(
+    let mut image = ascii_resize(
         image,
-        size.unwrap_or(90) as u32
+        size.unwrap_or(100) as u32
     );
     if invert.unwrap_or(false) {
         image.invert();
     }
-
+    let image = image.convert::<L>();
     let mut text = String::new();
     for row in image.pixels() {
         for pixel in row {
-            let gray = grayscale(pixel);
-            let idx: usize;
-            if gray == 0 {
-                idx = ASCII_CHARS.len() - 1;
-            } else {
-                idx = gray as usize % ASCII_CHARS.len();
-            }
-
-            text.push_str(ASCII_CHARS[idx]);
+            text.push_str(ASCII_CHARS[pixel.value() as usize / 25]);
         }
         text.push_str("\n");
     }

@@ -138,3 +138,11 @@ pub fn fix_braille_spaces(mut matrix: Vec<Vec<String>>, width: usize, height: us
     }
     matrix
 }
+
+/// resizes ascii image for proper aspect ratio when rendering the characters
+pub fn ascii_resize(image: Image<Rgba>, cols: u32) -> Image<Rgba> {
+    let (w, h) = image.dimensions();
+    let ratio = h as f32 / w as f32;
+    let rows = (ratio * (cols as f32 / 2.0)) as u32;
+    image.resized(cols, rows, ResizeAlgorithm::Bicubic)
+}

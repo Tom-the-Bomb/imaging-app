@@ -20,12 +20,8 @@ p {
 
 a {
     font-family: var(--text-font);
-    color: white;
-    text-decoration: none;
-}
-
-a {
     font-size: 1em;
+    text-decoration: none;
     display: inline-block;
     position: relative;
     color: rgb(214, 139, 139);

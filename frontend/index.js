@@ -1,11 +1,57 @@
 function main() {
-    document.addEventListener('paste', (event) => {
-        let files = event.clipboardData.files;
-        if (files) {
-            fileInput.files = files;
-            fileInputHandler();
-        }
-    });
+    const fileInput = document.getElementById('upload');
+    const fileDropArea = document.getElementById('upload-label');
+
+    if (fileInput) {
+        document.addEventListener('paste', async (event) => {
+            let files = event.clipboardData.files;
+
+            if (files[0]) {
+                if (files[0].type.startsWith('image/')) {
+                    fileInput.files = files;
+                    fileInput.classList.add("is-valid");
+
+                    if (fileDropArea) {
+                        fileDropArea.classList.add("upload-focused");
+                        await new Promise(resolve => setTimeout(resolve, 400));
+                        fileDropArea.classList.remove("upload-focused");
+                    }
+                }
+            }
+        });
+
+        fileInput.addEventListener('change', () => {
+            fileInput.classList.add("is-valid");
+        });
+    }
+
+    if (fileDropArea) {
+        fileDropArea.addEventListener('dragover', (event) => {
+            event.preventDefault();
+            fileDropArea.classList.add('upload-hovered');
+        });
+
+        fileDropArea.addEventListener('dragenter', () => {
+            fileDropArea.classList.add('upload-hovered');
+        });
+
+        fileDropArea.addEventListener('dragleave', () => {
+            fileDropArea.classList.remove('upload-hovered');
+        });
+
+        fileDropArea.addEventListener('drop', (event) => {
+            event.preventDefault();
+            fileDropArea.classList.remove('upload-hovered');
+
+            let files = event.dataTransfer.files;
+            if (files[0]) {
+                if (files[0].type.startsWith('image/')) {
+                    fileInput.files = files;
+                    fileInput.classList.add("is-valid");
+                }
+            }
+        });
+    }
 
     doFormValidation();
 }
@@ -63,6 +109,8 @@ async function makeRequest(endpoint, bytes) {
             `<img class="lg-shadow" id="output-image" src="${url}" alt="output image"/>`;
     } else {
         alert(`${response.status}: Something went wrong`);
+        output.innerHTML =
+            `<div class="lg-shadow" id="output-placeholder">Output Image</div>`;
     }
 }
 

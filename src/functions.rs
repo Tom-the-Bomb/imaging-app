@@ -1,6 +1,7 @@
 //! File containing all processing functions for indivdual endpoints
 
 use std::collections::HashMap;
+use rand::{thread_rng, Rng};
 use std::fs::read_dir;
 use photon_rs::effects;
 use ril::prelude::*;
@@ -26,12 +27,23 @@ lazy_static::lazy_static! {
     /// unicode font used for `braille` (supports braille glyphs)
     static ref UNICODE_FONT: Font = Font::open("./assets/unicode.ttf", 30.0)
         .unwrap();
-    /// monospace font used for `ascii` (equal in spacing)
+    /// monospace font (consolas) used for `ascii` (equal in spacing)
     static ref MONOSPACE_FONT: Font = Font::open("./assets/monospace.ttf", 30.0)
+        .unwrap();
+    /// "programming / code" font used for `matrix`
+    static ref CODE_FONT: Font = Font::open("./assets/monaco-linux.ttf", 30.0)
         .unwrap();
     /// constant storing all the characters used in the `ascii` function
     static ref ASCII_CHARS: Vec<&'static str> = vec![
         "@", "#", "S", "%", "?", "*", "+", ";", ":", ",", ".", " "
+    ];
+    static ref CHAR_SAMPLE: Vec<&'static str> = vec![
+        "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f", "g",
+        "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x",
+        "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O",
+        "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "!", r#"""#, "#", "$", "%", "&",
+        "'", "(", ")", "*", "+", ",", "-", ".", "/", ":", ";", "<", "=", ">", "?", "@", "[", r"\",
+        "]", "^", "_", "`", "{", "|", "}", "~", " ", "\t", "\n", "\r", "\x0b", "\x0c",
     ];
 
     /// mapping containing all minecraft assets stored as (color: image) pairs
@@ -96,7 +108,7 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
             if pixel.a > 0 {
                 base.paste(x, y, {
                     let (r, g, b) = LEGO.bands();
-                    Image::from_bands((
+                    &Image::from_bands((
                         colorize_lego_band(r, pixel.r as i32),
                         colorize_lego_band(g, pixel.g as i32),
                         colorize_lego_band(b, pixel.b as i32),
@@ -141,7 +153,7 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
                         .cloned()
                         .unwrap();
 
-                    MC_IMAGES.get(&color)
+                    &MC_IMAGES.get(&color)
                         .unwrap()
                         .clone()
                         .convert()
@@ -225,4 +237,46 @@ pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R
     }
     let canvas = draw_text(&MONOSPACE_FONT, text);
     Ok(canvas)
+}
+
+/// builds an image out of ascii punctuation characters
+pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption) -> ril::Result<ImageSequence<Rgb>> {
+    let image = resize_to(
+        image,
+        size.unwrap_or(70) as u32
+    );
+    let mut sequence = ImageSequence::<Rgb>::new();
+
+    for _ in 0..4 {
+        let (mut x, mut y) = (0u32, 0u32);
+        let mut canvas = Image::<Rgb>::new(
+            image.width() * 30,
+            image.height() * 30,
+            Rgb::black(),
+        );
+        let mut rng = thread_rng();
+        for row in image.pixels() {
+            for px in row {
+                if px.a > 0 {
+                    let chr = if num_only.unwrap_or(false) {
+                        rng.gen_range(0..=9)
+                            .to_string()
+                    } else {
+                        CHAR_SAMPLE[rng.gen_range(0..CHAR_SAMPLE.len()) as usize]
+                            .to_string()
+                    };
+                    let layout = TextLayout::new()
+                        .with_wrap(WrapStyle::None)
+                        .with_position(x, y)
+                        .with_basic_text(&CODE_FONT, chr, px.into_rgb());
+                    canvas.draw(&layout);
+                }
+                x += 30;
+            }
+            x = 0;
+            y += 30;
+        }
+        sequence.push_frame(Frame::from_image(canvas))
+    }
+    Ok(sequence)
 }

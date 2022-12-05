@@ -27,6 +27,14 @@ pub struct AsciiOption {
     pub size: Option<u16>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct MatrixOption {
+    /// size (max number of blocks for a side) for generated image
+    pub size: Option<u8>,
+    /// specifies whether or not to use numbers only
+    pub num_only: Option<bool>,
+}
+
 /// an empty struct used in endpoints with no query arguments to accept
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NoArgs {}

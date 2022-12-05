@@ -61,6 +61,7 @@ async fn main() {
         .route("/frost", post(wrap!(functions::frost, models::NoArgs)))
         .route("/braille", post(wrap!(functions::braille, models::BrailleOption)))
         .route("/ascii", post(wrap!(functions::ascii, models::AsciiOption)))
+        .route("/matrix", post(wrap!(functions::matrix, models::MatrixOption)))
         .fallback(
             get_service(
                 ServeDir::new("./frontend/")

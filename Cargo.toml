@@ -4,6 +4,7 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+rand = "0.8"
 lazy_static = "1.4"
 photon-rs = "0.3"
 tower = {version = "0.4", features = ["full"] }

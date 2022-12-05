@@ -49,9 +49,10 @@ h1 {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-evenly;
     height: 100%;
     flex-grow: 1;
+    flex-wrap: wrap;
 }
 
 nav {
@@ -93,7 +94,7 @@ footer {
     width: 20em;
     padding: 2em;
     border-radius: 1em;
-    margin-right: 9em;
+    margin-top: 2em;
     background-color: rgb(30, 31, 48);
 }
 
@@ -201,7 +202,7 @@ footer {
 }
 
 #output-container {
-    margin-left: 9em;
+    margin-top: 2em;
 }
 
 #output-placeholder {

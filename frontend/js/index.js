@@ -22,7 +22,7 @@ function main() {
         });
 
         fileInput.addEventListener('change', () => {
-            if (fileInput.files) {
+            if (fileInput.files.length > 0) {
                 fileInput.classList.add("is-valid");
             } else {
                 fileInput.classList.remove("is-valid");

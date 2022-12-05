@@ -186,6 +186,20 @@ footer {
     outline: 2px solid rgb(75, 182, 132);
 }
 
+#reload-img {
+    width: 1.8em;
+}
+
+#reload-btn {
+    margin-left: 1em;
+    background-color: rgb(26, 21, 41);
+    border-radius: 0.6em;
+}
+
+#reload-btn:hover {
+    background-color:rgb(17, 17, 30);
+}
+
 #output-container {
     margin-left: 9em;
 }

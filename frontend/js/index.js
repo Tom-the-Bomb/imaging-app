@@ -1,6 +1,7 @@
 function main() {
     const fileInput = document.getElementById('upload');
     const fileDropArea = document.getElementById('upload-label');
+    const reloadButton = document.getElementById('reload-btn');
 
     if (fileInput) {
         document.addEventListener('paste', async (event) => {
@@ -51,6 +52,13 @@ function main() {
                 }
             }
         });
+    }
+
+    if (reloadButton) {
+        reloadButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            window.location.reload();
+        })
     }
 
     doFormValidation();

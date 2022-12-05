@@ -247,7 +247,7 @@ pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption)
     );
     let mut sequence = ImageSequence::<Rgb>::new();
 
-    for _ in 0..4 {
+    for _ in 0..5 {
         let (mut x, mut y) = (0u32, 0u32);
         let mut canvas = Image::<Rgb>::new(
             image.width() * 30,

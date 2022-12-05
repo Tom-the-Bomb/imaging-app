@@ -22,7 +22,11 @@ function main() {
         });
 
         fileInput.addEventListener('change', () => {
-            fileInput.classList.add("is-valid");
+            if (fileInput.files) {
+                fileInput.classList.add("is-valid");
+            } else {
+                fileInput.classList.remove("is-valid");
+            }
         });
     }
 
@@ -70,11 +74,11 @@ function doFormValidation() {
         .forEach((form) => {
             form.addEventListener('submit', (event) => {
                 if (!form.checkValidity()) {
-                    event.preventDefault()
-                    event.stopPropagation()
+                    event.preventDefault();
+                    event.stopPropagation();
                 }
-                form.classList.add('was-validated')
-            }, false)
+                form.classList.add('was-validated');
+            }, false);
         });
 }
 

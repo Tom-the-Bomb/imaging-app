@@ -35,6 +35,16 @@ pub struct MatrixOption {
     pub num_only: Option<bool>,
 }
 
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ShapesOption {
+    /// size of each individual shape rendered
+    pub block: Option<u8>,
+    /// amount of shapes rendered
+    pub density: Option<u32>,
+    /// specifies whether to make it animated or not
+    pub gif: Option<bool>,
+}
+
 /// an empty struct used in endpoints with no query arguments to accept
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NoArgs {}

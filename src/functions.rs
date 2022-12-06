@@ -19,6 +19,8 @@ const MCSIZE: u32 = 20;
 
 /// shortcut typealias for return type of all functions
 type R = ril::Result<Image<Rgba>>;
+/// shortcut typealias but for for animated results
+type RGif = ril::Result<ImageSequence<Rgba>>;
 
 lazy_static::lazy_static! {
     /// gray lego brick asset
@@ -222,7 +224,7 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
 pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R {
     let mut image = ascii_resize(
         image,
-        size.unwrap_or(100) as u32
+        size.unwrap_or(128) as u32
     );
     if invert.unwrap_or(false) {
         image.invert();
@@ -243,7 +245,7 @@ pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R
 pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption) -> ril::Result<ImageSequence<Rgb>> {
     let image = resize_to(
         image,
-        size.unwrap_or(70) as u32
+        size.unwrap_or(80) as u32
     );
     let mut sequence = ImageSequence::<Rgb>::new();
 
@@ -277,6 +279,60 @@ pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption)
             y += 30;
         }
         sequence.push_frame(Frame::from_image(canvas))
+    }
+    Ok(sequence)
+}
+
+/// builds a shape out of diagonal lines
+pub fn lines(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
+    let image = resize_to(
+        image, 320,
+    );
+    let mut sequence = ImageSequence::<Rgba>::new();
+    let t = gif.unwrap_or(true)
+        .then_some(3)
+        .unwrap_or(1);
+
+    for _ in 0..t {
+        sequence.push_frame(
+            gen_shape_frame(&image, ShapeMethod::Line, block, density)
+        )
+    }
+    Ok(sequence)
+}
+
+/// builds a shape out of circles
+pub fn balls(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
+    let image = resize_to(
+        image, 320,
+    );
+    let mut sequence = ImageSequence::<Rgba>::new();
+    let t = gif.unwrap_or(true)
+        .then_some(3)
+        .unwrap_or(1);
+
+    for _ in 0..t {
+        sequence.push_frame(
+            gen_shape_frame(&image, ShapeMethod::Ball, block, density)
+        )
+    }
+    Ok(sequence)
+}
+
+/// builds a shape out of squares
+pub fn squares(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
+    let image = resize_to(
+        image, 320,
+    );
+    let mut sequence = ImageSequence::<Rgba>::new();
+    let t = gif.unwrap_or(true)
+        .then_some(3)
+        .unwrap_or(1);
+
+    for _ in 0..t {
+        sequence.push_frame(
+            gen_shape_frame(&image, ShapeMethod::Square, block, density)
+        )
     }
     Ok(sequence)
 }

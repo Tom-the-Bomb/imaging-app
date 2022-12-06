@@ -2,7 +2,15 @@
 //! individual processing functions for endpoints in `functions.rs`
 use photon_rs::PhotonImage;
 use ril::prelude::*;
+use rand::{thread_rng, Rng};
 use crate::braille_data::BRAILLE_DATA;
+
+/// enum for determining type of shape to draw for [`gen_shape_frame`]
+pub enum ShapeMethod {
+    Line,
+    Ball,
+    Square,
+}
 
 /// helper function for lego to colorize the lego brick
 /// with each pixel's color in the image
@@ -145,4 +153,53 @@ pub fn ascii_resize(image: Image<Rgba>, cols: u32) -> Image<Rgba> {
     let ratio = h as f32 / w as f32;
     let rows = (ratio * (cols as f32 / 2.0)) as u32;
     image.resized(cols, rows, ResizeAlgorithm::Bicubic)
+}
+
+/// generates a shape frame for balls / square / lines
+pub fn gen_shape_frame(
+    image: &Image<Rgba>,
+    method: ShapeMethod,
+    size: Option<u8>,
+    density: Option<u32>,
+) -> Frame<Rgba> {
+    let size = size.unwrap_or(10) as u32;
+    let density = density.unwrap_or(10000);
+    let (width, height) = image.dimensions();
+
+    let mut rng = thread_rng();
+    let mut canvas = Image::<Rgba>::new(
+        width, height,
+        Rgba::transparent(),
+    );
+    for _ in 0..density {
+        let x = rng.gen_range(1..width);
+        let y = rng.gen_range(1..height);
+        let (x1, y1, x2, y2) = 
+            (
+                x.saturating_sub(size),
+                y.saturating_sub(size), 
+                x + size, 
+                y + size,
+            );
+        let fill = *image.get_pixel(x, y)
+            .unwrap();
+        match method {
+            ShapeMethod::Line =>
+                Line::new(
+                    (x1, y1), 
+                    (x2, y2),
+                    fill,
+                ).draw(&mut canvas),
+            ShapeMethod::Ball =>
+                Ellipse::from_bounding_box(x1, y1, x2, y2)
+                    .with_border(Border::new(Rgba::black(), 1))
+                    .with_fill(fill)
+                    .draw(&mut canvas),
+            ShapeMethod::Square => 
+                Rectangle::from_bounding_box(x1, y1, x2, y2)
+                    .with_fill(fill)
+                    .draw(&mut canvas),
+        }
+    }
+    Frame::from_image(canvas)
 }

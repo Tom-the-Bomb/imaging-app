@@ -145,16 +145,16 @@ footer {
 }
 
 #upload:focus + label {
-    outline: rgb(81, 88, 222) 2px solid;
+    border: rgb(81, 88, 222) 2px solid;
 }
 
 .upload-hovered {
     transform: scale(1.05);
-    outline: rgb(81, 88, 222) 2px solid;
+    border: rgb(81, 88, 222) 2px solid;
 }
 
 .upload-focused {
-    outline: rgb(81, 88, 222) 2px solid;
+    border: rgb(81, 88, 222) 2px solid;
 }
 
 #function-select {
@@ -185,7 +185,7 @@ footer {
 }
 
 #submit:focus {
-    outline: 2px solid rgb(75, 182, 132);
+    border: 2px solid rgb(75, 182, 132);
 }
 
 #reload-img {

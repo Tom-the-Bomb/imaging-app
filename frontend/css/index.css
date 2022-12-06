@@ -53,11 +53,8 @@ h1 {
     height: 100%;
     flex-grow: 1;
     flex-wrap: wrap;
-}
-
-#blank-box {
-    width: 18em;
-    height: 5em;
+    row-gap: 2em;
+    column-gap: 18em;
 }
 
 nav {

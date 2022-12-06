@@ -53,7 +53,7 @@ h1 {
     height: 100%;
     flex-grow: 1;
     flex-wrap: wrap;
-    row-gap: 2em;
+    row-gap: 4em;
     column-gap: 18em;
 }
 

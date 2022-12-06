@@ -20,7 +20,7 @@ body {
 }
 
 main {
-    min-height: calc(100vh - 12em);
+    min-height: calc(100vh - 18em);
     display: flex;
     flex-direction: column;
 }
@@ -31,7 +31,7 @@ h1 {
     text-align: center;
     width: 100%;
     margin-top: 1em;
-    margin-bottom: 0;
+    margin-bottom: 2em;
 }
 
 #ferris {
@@ -49,10 +49,15 @@ h1 {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
     height: 100%;
     flex-grow: 1;
     flex-wrap: wrap;
+}
+
+#blank-box {
+    width: 18em;
+    height: 5em;
 }
 
 nav {
@@ -94,7 +99,6 @@ footer {
     width: 20em;
     padding: 2em;
     border-radius: 1em;
-    margin-top: 2em;
     background-color: rgb(30, 31, 48);
 }
 
@@ -199,10 +203,6 @@ footer {
 
 #reload-btn:hover {
     background-color:rgb(17, 17, 30);
-}
-
-#output-container {
-    margin-top: 2em;
 }
 
 #output-placeholder {

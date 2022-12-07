@@ -12,6 +12,7 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="css/index.css">
+        <script src="js/modalData.js"></script>
         <script src="js/index.js" defer></script>
     </head>
     <body>
@@ -23,8 +24,8 @@
         <main>
             <h1>Image Texture Modifier<img id="ferris" src="./assets/ferris.png"></h1>
             <div id="main-container">
-                <div id="form" class="lg-shadow" onsubmit="formHandler(event)">
-                    <form class="needs-validation" novalidate>
+                <div id="form" class="lg-shadow">
+                    <form class="needs-validation" onsubmit="formHandler(event)" novalidate>
                         <h4 class="form-header">Process Image</h4>
                         <div>
                             <select class="form-select" id="function-select" required>
@@ -57,10 +58,24 @@
                                 Image Uploaded
                             </div>
                         </div>
-                        <div>
+                        <div id="form-bottom-row">
                             <input class="shadow" id="submit" type="submit">
-                            <button id="reload-btn" class="btn">
-                                <img id="reload-img" src="./assets/reload.svg" alt="reload">
+                            <button
+                                type="button" 
+                                id="reload-btn"
+                                class="small-btns btn"
+                                onclick="window.location.reload()"
+                            >
+                                <img class="small-icon" src="./assets/reload.svg" alt="reload">
+                            </button>
+                            <button 
+                                type="button" 
+                                id="options-btn" 
+                                class="small-btns btn" 
+                                data-bs-toggle="modal" 
+                                data-bs-target="#options-modal"
+                            >
+                                <img class="small-icon" src="./assets/gear.svg">
                             </button>
                         </div>
                     </form>
@@ -79,5 +94,36 @@
                 <img class="footer-logo" alt="github" src="./assets/github.svg">
             </a>
         </footer>
+
+        <div
+            class="modal fade"
+            id="options-modal"
+            tabindex="-1"
+            aria-labelledby="options-modal-label"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div id="modal-display" class="modal-content">
+                    <div class="md-section modal-header">
+                        <h5 class="modal-title" id="options-modal-label">Modal title</h5>
+                        <button 
+                            type="button"
+                            class="btn-close btn-close-white"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <form id="modal-form" onsubmit="modalFormHandler(event)">
+                        <div class="md-section modal-body">
+                            Select a function first!
+                        </div>
+                        <div class="md-section modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" id="modal-submit" class="btn btn-success">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

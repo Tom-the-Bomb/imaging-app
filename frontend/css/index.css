@@ -176,10 +176,16 @@ footer {
     background-color: rgb(88, 73, 100);
 }
 
+#form-bottom-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 3em;
+}
+
 #submit {
     width: 8em;
     height: 4em;
-    margin-top: 3em;
     text-align: center;
     font-family: var(--submit-font);
     background-color: rgb(96, 113, 102);
@@ -198,18 +204,27 @@ footer {
     border: 2px solid rgb(75, 182, 132);
 }
 
-#reload-img {
+.small-icon {
     width: 1.8em;
 }
 
-#reload-btn {
+.small-btns {
     margin-left: 1em;
     background-color: rgb(26, 21, 41);
     border-radius: 0.6em;
 }
 
-#reload-btn:hover {
+.small-btns:hover {
     background-color:rgb(17, 17, 30);
+}
+
+#modal-display {
+    color: rgb(198, 180, 180);
+    background-color:rgb(40, 40, 50);
+}
+
+.md-section {
+    border: none;
 }
 
 #output-placeholder {

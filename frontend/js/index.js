@@ -1,7 +1,7 @@
 function main() {
     const fileInput = document.getElementById('upload');
+    const fnSelect = document.getElementById('function-select');
     const fileDropArea = document.getElementById('upload-label');
-    const reloadButton = document.getElementById('reload-btn');
 
     if (fileInput) {
         document.addEventListener('paste', async (event) => {
@@ -58,10 +58,11 @@ function main() {
         });
     }
 
-    if (reloadButton) {
-        reloadButton.addEventListener('click', (event) => {
-            event.preventDefault();
-            window.location.reload();
+    if (fnSelect) {
+        fnSelect.addEventListener('change', () => {
+            const selected =
+                fnSelect.options[fnSelect.selectedIndex];
+            let modalHTML;
         })
     }
 
@@ -124,6 +125,10 @@ async function makeRequest(endpoint, bytes) {
         output.innerHTML =
             `<div class="lg-shadow" id="output-placeholder">Output Image</div>`;
     }
+}
+
+function modalFormHandler(event) {
+
 }
 
 main();

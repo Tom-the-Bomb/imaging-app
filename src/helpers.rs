@@ -174,11 +174,11 @@ pub fn gen_shape_frame(
     for _ in 0..density {
         let x = rng.gen_range(1..width);
         let y = rng.gen_range(1..height);
-        let (x1, y1, x2, y2) = 
+        let (x1, y1, x2, y2) =
             (
                 x.saturating_sub(size),
-                y.saturating_sub(size), 
-                x + size, 
+                y.saturating_sub(size),
+                x + size,
                 y + size,
             );
         let fill = *image.get_pixel(x, y)
@@ -186,7 +186,7 @@ pub fn gen_shape_frame(
         match method {
             ShapeMethod::Line =>
                 Line::new(
-                    (x1, y1), 
+                    (x1, y1),
                     (x2, y2),
                     fill,
                 ).draw(&mut canvas),
@@ -195,7 +195,7 @@ pub fn gen_shape_frame(
                     .with_border(Border::new(Rgba::black(), 1))
                     .with_fill(fill)
                     .draw(&mut canvas),
-            ShapeMethod::Square => 
+            ShapeMethod::Square =>
                 Rectangle::from_bounding_box(x1, y1, x2, y2)
                     .with_fill(fill)
                     .draw(&mut canvas),

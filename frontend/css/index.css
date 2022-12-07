@@ -12,6 +12,10 @@ a {
     text-decoration: none;
 }
 
+html {
+    background-color: rgb(40, 40, 58);
+}
+
 body {
     margin: 0;
     display: flex;
@@ -39,7 +43,6 @@ h1 {
     text-align: center;
     width: 100%;
     margin-top: 1em;
-    margin-bottom: 3em;
 }
 
 #ferris {
@@ -62,6 +65,7 @@ h1 {
     flex-wrap: wrap;
     row-gap: 4em;
     column-gap: 18em;
+    flex-grow: 1;
 }
 
 nav {
@@ -80,7 +84,7 @@ footer {
     color: rgb(210, 170, 170);
     height: 9em;
     background-color: rgb(19, 19, 33);
-    width: 100vw;
+    width: 100%;
 }
 
 .shadow {

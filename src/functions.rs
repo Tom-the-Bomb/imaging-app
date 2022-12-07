@@ -241,7 +241,7 @@ pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R
         for pixel in row {
             text.push_str(ASCII_CHARS[pixel.value() as usize / 25]);
         }
-        text.push_str("\n");
+        text.push('\n');
     }
     let canvas = draw_text(&MONOSPACE_FONT, text);
     Ok(canvas)

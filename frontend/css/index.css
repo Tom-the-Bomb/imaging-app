@@ -14,6 +14,9 @@ a {
 
 body {
     margin: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
     background-image:
         url('../assets/background.svg'),
         linear-gradient(
@@ -22,13 +25,12 @@ body {
             rgb(45, 45, 65),
             rgb(73, 71, 99)
         );
-    min-height: 100vh;
 }
 
 main {
-    min-height: calc(100vh - 18em);
     display: flex;
     flex-direction: column;
+    flex-grow: 1;
 }
 
 h1 {
@@ -37,7 +39,7 @@ h1 {
     text-align: center;
     width: 100%;
     margin-top: 1em;
-    margin-bottom: 2em;
+    margin-bottom: 3em;
 }
 
 #ferris {
@@ -57,7 +59,6 @@ h1 {
     align-items: center;
     justify-content: center;
     height: 100%;
-    flex-grow: 1;
     flex-wrap: wrap;
     row-gap: 4em;
     column-gap: 18em;
@@ -72,12 +73,11 @@ nav {
 }
 
 footer {
+    margin-top: 4em;
     text-align: center;
     padding: 1em;
     font-family: monospace;
     color: rgb(210, 170, 170);
-    position: fixed;
-    bottom: 0;
     height: 9em;
     background-color: rgb(19, 19, 33);
     width: 100vw;

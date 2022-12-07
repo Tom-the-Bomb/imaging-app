@@ -172,6 +172,9 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
 
 /// paints out an image
 pub fn paint(image: Image<Rgba>, _: NoArgs) -> R {
+    let image = resize_to(
+        image, 360,
+    );
     let mut img = to_photon(image)?;
     effects::oil(&mut img, 5, 60.0);
 
@@ -181,6 +184,9 @@ pub fn paint(image: Image<Rgba>, _: NoArgs) -> R {
 
 /// frosted glass effect?
 pub fn frost(image: Image<Rgba>, _: NoArgs) -> R {
+    let image = resize_to(
+        image, 360,
+    );
     let mut img = to_photon(image)?;
     effects::frosted_glass(&mut img);
 
@@ -192,7 +198,7 @@ pub fn frost(image: Image<Rgba>, _: NoArgs) -> R {
 pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: BrailleOption) -> R {
     let image = resize_to(
         image,
-        size.unwrap_or(128) as u32
+        size.unwrap_or(130) as u32
     );
     let w = (image.width() as f32 / 2.0).ceil() as usize;
     let h = (image.height() as f32 / 4.0).ceil() as usize;
@@ -224,7 +230,7 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
 pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R {
     let mut image = ascii_resize(
         image,
-        size.unwrap_or(128) as u32
+        size.unwrap_or(130) as u32
     );
     if invert.unwrap_or(false) {
         image.invert();
@@ -286,7 +292,7 @@ pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption)
 /// builds a shape out of diagonal lines
 pub fn lines(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
     let image = resize_to(
-        image, 320,
+        image, 360,
     );
     let mut sequence = ImageSequence::<Rgba>::new();
     let t = gif.unwrap_or(true)
@@ -304,7 +310,7 @@ pub fn lines(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOpt
 /// builds a shape out of circles
 pub fn balls(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
     let image = resize_to(
-        image, 320,
+        image, 360,
     );
     let mut sequence = ImageSequence::<Rgba>::new();
     let t = gif.unwrap_or(true)
@@ -322,7 +328,7 @@ pub fn balls(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOpt
 /// builds a shape out of squares
 pub fn squares(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
     let image = resize_to(
-        image, 320,
+        image, 360,
     );
     let mut sequence = ImageSequence::<Rgba>::new();
     let t = gif.unwrap_or(true)

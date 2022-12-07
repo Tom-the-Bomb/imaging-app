@@ -14,8 +14,14 @@ a {
 
 body {
     margin: 0;
-    background-image: url('../assets/background.svg');
-    background-color: rgb(40, 40, 60);
+    background-image:
+        url('../assets/background.svg'),
+        linear-gradient(
+            40deg,
+            rgb(32, 31, 52),
+            rgb(45, 45, 65),
+            rgb(73, 71, 99)
+        );
     min-height: 100vh;
 }
 
@@ -60,7 +66,7 @@ h1 {
 nav {
     padding: 1em;
     text-align: center;
-    background-color: rgb(50, 50, 70);
+    background-color: rgb(40, 40, 58);
     font-family: var(--main-font);
     color: white;
 }
@@ -203,8 +209,8 @@ footer {
 }
 
 #output-placeholder {
-    width: 300px;
-    height: 300px;
+    width: 17em;
+    height: 17em;
     border-radius: 10%;
     border: dashed rgb(59, 64, 107);
     background-color:rgb(46, 48, 65);
@@ -220,7 +226,9 @@ footer {
 
 #output-image {
     border-radius: 1em;
-    height: 350px;
+    outline: 3px solid rgb(89, 89, 154);
+    max-width: 25em;
+    max-height: 25em;
 }
 
 .loading {

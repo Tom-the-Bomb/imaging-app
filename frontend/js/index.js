@@ -1,3 +1,5 @@
+var query = {};
+
 function main() {
     const fileInput = document.getElementById('upload');
     const fnSelect = document.getElementById('function-select');
@@ -60,9 +62,27 @@ function main() {
 
     if (fnSelect) {
         fnSelect.addEventListener('change', () => {
+            const modalBody = document.getElementById('modal-body');
+            const modalFooter = document.getElementById('modal-footer');
             const selected =
                 fnSelect.options[fnSelect.selectedIndex];
-            let modalHTML;
+            const modalHTML = formMapping[selected.value.toLowerCase()];
+
+            if (modalBody) {
+                modalBody.innerHTML = modalHTML;
+            }
+
+            if (modalFooter) {
+                modalFooter.innerHTML +=
+                    `<button
+                        type="submit"
+                        id="modal-submit"
+                        class="btn btn-success"
+                        data-bs-dismiss="modal"
+                    >
+                        Save changes
+                    </button>`;
+            }
         })
     }
 
@@ -113,7 +133,8 @@ async function makeRequest(endpoint, bytes) {
         body: data,
     };
 
-    let response = await fetch(`/${endpoint}`, payload);
+    let params = new URLSearchParams(query);
+    let response = await fetch(`/${endpoint}?` + params, payload);
     if (response.ok) {
         const url = URL.createObjectURL(
             await response.blob()
@@ -128,7 +149,20 @@ async function makeRequest(endpoint, bytes) {
 }
 
 function modalFormHandler(event) {
+    event.preventDefault();
+    const modalBody = document.getElementById('modal-body');
 
+    if (modalBody) {
+        query = {};
+        const inputs = modalBody.getElementsByTagName('input');
+
+        for (let input of inputs) {
+            let value = input.type === 'checkbox'
+                ? input.checked
+                : input.value;
+            query[input.id] = value;
+        }
+    }
 }
 
 main();

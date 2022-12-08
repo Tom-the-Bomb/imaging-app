@@ -61,18 +61,18 @@
                         <div id="form-bottom-row">
                             <input class="shadow" id="submit" type="submit">
                             <button
-                                type="button" 
+                                type="button"
                                 id="reload-btn"
                                 class="small-btns btn"
                                 onclick="window.location.reload()"
                             >
                                 <img class="small-icon" src="./assets/reload.svg" alt="reload">
                             </button>
-                            <button 
-                                type="button" 
-                                id="options-btn" 
-                                class="small-btns btn" 
-                                data-bs-toggle="modal" 
+                            <button
+                                type="button"
+                                id="options-btn"
+                                class="small-btns btn"
+                                data-bs-toggle="modal"
                                 data-bs-target="#options-modal"
                             >
                                 <img class="small-icon" src="./assets/gear.svg">
@@ -106,7 +106,7 @@
                 <div id="modal-display" class="modal-content">
                     <div class="md-section modal-header">
                         <h5 class="modal-title" id="options-modal-label">Modal title</h5>
-                        <button 
+                        <button
                             type="button"
                             class="btn-close btn-close-white"
                             data-bs-dismiss="modal"
@@ -114,12 +114,11 @@
                         ></button>
                     </div>
                     <form id="modal-form" onsubmit="modalFormHandler(event)">
-                        <div class="md-section modal-body">
+                        <div id="modal-body" class="md-section modal-body">
                             Select a function first!
                         </div>
-                        <div class="md-section modal-footer">
+                        <div id="modal-footer" class="md-section modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" id="modal-submit" class="btn btn-success">Save changes</button>
                         </div>
                     </form>
                 </div>

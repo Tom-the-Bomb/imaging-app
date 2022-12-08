@@ -282,3 +282,14 @@ footer {
 .footer-logo:hover {
     filter: brightness(150%);
 }
+
+#modal-body .form-control, .form-check-input {
+    background-color: rgb(69, 64, 84);
+    margin-bottom: 1em;
+    border: none;
+    color: rgb(198, 180, 180);
+}
+
+#modal-body .form-control {
+    margin-top: 1em;
+}

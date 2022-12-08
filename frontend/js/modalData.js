@@ -27,9 +27,9 @@ const paintInput = `
     <label for="radius">Radius of paint particle</label>
 </div>
 <div class="form-floating">
-    <input type="number" class="custom-input form-control" id="intensity" value="60" min="1" max="100" step="0.1">
+    <input type="number" class="custom-input form-control" id="intensity" value="60" min="1" max="100" step="0.01">
     <div class="invalid-feedback">
-        Value must be a number between 1 and 100
+        Value must be a number between 1 and 100 (with step of 0.01)
     </div>
     <label for="intensity">Intensity</label>
 </div>

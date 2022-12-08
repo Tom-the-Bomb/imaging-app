@@ -87,6 +87,23 @@ function main() {
     }
 
     doFormValidation();
+    enableTooltips();
+}
+
+function enableTooltips() {
+    const tooltipTriggerList = [].slice.call(
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    );
+    tooltipTriggerList.map(
+        function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        }
+    );
+
+    const optionsButton = document.getElementById('options-btn');
+    if (optionsButton) {
+        new bootstrap.Tooltip(optionsButton);
+    }
 }
 
 function doFormValidation() {

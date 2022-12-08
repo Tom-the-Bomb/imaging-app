@@ -53,6 +53,9 @@ pub async fn root() -> Html<String> {
 
 #[tokio::main]
 async fn main() {
+    dotenv::dotenv()
+        .ok();
+
     let app: Router<Body> = Router::new()
         .route("/", get(root))
         .route("/lego", post(wrap!(functions::lego, models::SizeOption)))
@@ -81,6 +84,11 @@ async fn main() {
                 )
             }),
         );
+        
+    let port = std::env::var("PORT")
+        .unwrap()
+        .parse::<u16>()
+        .unwrap();
 
-    run(app, None).await;
+    run(app, Some(port)).await;
 }

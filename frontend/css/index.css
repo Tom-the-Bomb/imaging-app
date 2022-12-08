@@ -285,9 +285,12 @@ footer {
 
 #modal-body .form-control, .form-check-input {
     background-color: rgb(69, 64, 84);
-    margin-bottom: 1em;
     border: none;
     color: rgb(198, 180, 180);
+}
+
+#modal-body .invalid-feedback {
+    margin-bottom: 1.5em;
 }
 
 #modal-body .form-control {

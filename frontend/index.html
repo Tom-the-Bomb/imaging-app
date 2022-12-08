@@ -24,8 +24,8 @@
         <main>
             <h1>Image Texture Modifier<img id="ferris" src="./assets/ferris.png"></h1>
             <div id="main-container">
-                <div id="form" class="lg-shadow">
-                    <form class="needs-validation" onsubmit="formHandler(event)" novalidate>
+                <div id="form" class="lg-shadow" onsubmit="formHandler(event)">
+                    <form class="needs-validation" novalidate>
                         <h4 class="form-header">Process Image</h4>
                         <div>
                             <select class="form-select" id="function-select" required>
@@ -113,14 +113,16 @@
                             aria-label="Close"
                         ></button>
                     </div>
-                    <form class="needs-validation" id="modal-form" onsubmit="modalFormHandler(event)" novalidate>
-                        <div id="modal-body" class="md-section modal-body">
-                            Select a function first!
-                        </div>
-                        <div id="modal-footer" class="md-section modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
-                    </form>
+                    <div onsubmit="modalFormHandler(event)">
+                        <form class="needs-validation" id="modal-form" novalidate>
+                            <div id="modal-body" class="md-section modal-body">
+                                Select a function first!
+                            </div>
+                            <div id="modal-footer" class="md-section modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

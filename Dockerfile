@@ -5,4 +5,4 @@ COPY . .
 
 RUN cargo build --release
 
-CMD ./target/release/imaging-app
+CMD ./target/release/image-web

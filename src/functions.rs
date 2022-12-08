@@ -171,12 +171,15 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
 }
 
 /// paints out an image
-pub fn paint(image: Image<Rgba>, _: NoArgs) -> R {
+pub fn paint(image: Image<Rgba>, PaintOption { radius, intensity }: PaintOption) -> R {
     let image = resize_to(
         image, 360,
     );
     let mut img = to_photon(image)?;
-    effects::oil(&mut img, 5, 60.0);
+
+    let radius = radius.unwrap_or(5);
+    let intensity = intensity.unwrap_or(60.0);
+    effects::oil(&mut img, radius, intensity);
 
     let image = to_ril(img);
     Ok(image)

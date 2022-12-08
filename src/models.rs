@@ -7,6 +7,15 @@ pub struct SizeOption {
     pub size: Option<u8>,
 }
 
+/// used for `paint` function
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct PaintOption {
+    /// radius of paint strokes
+    pub radius: Option<i32>,
+    /// intensity
+    pub intensity: Option<f64>,
+}
+
 /// used for `braille` function
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct BrailleOption {

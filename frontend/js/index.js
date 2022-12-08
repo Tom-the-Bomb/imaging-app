@@ -72,13 +72,13 @@ function main() {
                 modalBody.innerHTML = modalHTML;
             }
 
-            if (modalFooter) {
+            const submit = document.getElementById('modal-submit');
+            if (modalFooter && !submit) {
                 modalFooter.innerHTML +=
                     `<button
                         type="submit"
                         id="modal-submit"
                         class="btn btn-success"
-                        data-bs-dismiss="modal"
                     >
                         Save changes
                     </button>`;

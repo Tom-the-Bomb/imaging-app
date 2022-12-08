@@ -150,7 +150,13 @@ async function makeRequest(endpoint, bytes) {
 
 function modalFormHandler(event) {
     event.preventDefault();
+    const modal = document.getElementById('options-modal');
     const modalBody = document.getElementById('modal-body');
+
+    if (modal) {
+        bootstrap.Modal.getInstance(modal)
+            .hide();
+    }
 
     if (modalBody) {
         query = {};

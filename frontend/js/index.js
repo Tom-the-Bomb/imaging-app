@@ -69,6 +69,7 @@ function main() {
             const modalHTML = formMapping[selected.value.toLowerCase()];
 
             if (modalBody) {
+                query = {};
                 modalBody.innerHTML = modalHTML;
             }
 

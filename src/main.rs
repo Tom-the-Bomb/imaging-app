@@ -68,6 +68,10 @@ async fn main() {
         .route("/lines", post(wrap!(functions::lines, models::ShapesOption)))
         .route("/balls", post(wrap!(functions::balls, models::ShapesOption)))
         .route("/squares", post(wrap!(functions::squares, models::ShapesOption)))
+        .route("/black_white", post(wrap!(functions::black_white, models::NoArgs)))
+        .route("/edge", post(wrap!(functions::edge, models::NoArgs)))
+        .route("/emboss", post(wrap!(functions::emboss, models::NoArgs)))
+        .route("/hue_rotate", post(wrap!(functions::hue_rotate, models::NoArgs)))
         .fallback(
             get_service(
                 ServeDir::new("./frontend/")
@@ -84,7 +88,7 @@ async fn main() {
                 )
             }),
         );
-        
+
     let port = std::env::var("PORT")
         .unwrap()
         .parse::<u16>()

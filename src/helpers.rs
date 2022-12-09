@@ -59,7 +59,8 @@ pub fn draw_text(font: &Font, text: String) -> Image<Rgba> {
 }
 
 /// resizes an image to a certain size, using the longest side, maintains aspect ratio
-pub fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
+/// with provided resampling algorithm
+pub fn resize_to_alg(image: Image<Rgba>, size: u32, alg: ResizeAlgorithm) -> Image<Rgba> {
     let (w, h) = image.dimensions();
     let (width, height) =
         if w > h {
@@ -68,7 +69,12 @@ pub fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
             (((size as f32 / h as f32) * w as f32).ceil() as u32, size)
         };
 
-    image.resized(width, height, ResizeAlgorithm::Bilinear)
+    image.resized(width, height, alg)
+}
+
+/// same as [`resize_to_alg`]; shorthand with default resampling
+pub fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
+    resize_to_alg(image, size, ResizeAlgorithm::Bilinear)
 }
 
 /// converts a RIL [`Image`] to a Photon-rs [`PhotonImage`]

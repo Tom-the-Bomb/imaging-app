@@ -197,6 +197,62 @@ pub fn frost(image: Image<Rgba>, _: NoArgs) -> R {
     Ok(image)
 }
 
+/// emboss effect
+pub fn emboss(image: Image<Rgba>, _: NoArgs) -> R {
+    let image = resize_to(
+        image, 360,
+    );
+    let mut img = to_photon(image)?;
+    photon_rs::conv::emboss(&mut img);
+
+    let image = to_ril(img);
+    Ok(image)
+}
+
+/// "edge" effect
+pub fn edge(image: Image<Rgba>, _: NoArgs) -> R {
+    let image = resize_to(
+        image, 360,
+    );
+    let mut img = to_photon(image)?;
+    photon_rs::conv::edge_one(&mut img);
+    photon_rs::conv::sharpen(&mut img);
+
+    let image = to_ril(img);
+    Ok(image)
+}
+
+/// black / white pixels
+pub fn black_white(image: Image<Rgba>, _: NoArgs) -> R {
+    let image = resize_to(
+        image, 80,
+    );
+    let image = resize_to_alg(
+        image, 400, ResizeAlgorithm::Nearest,
+    )
+        .convert::<BitPixel>()
+        .convert::<Rgba>();
+
+    Ok(image)
+}
+
+/// rotates the hue (hsv) value of the image 360deg
+pub fn hue_rotate(image: Image<Rgba>, _: NoArgs) -> RGif {
+    let image = resize_to(
+        image, 360,
+    );
+    let mut sequence =
+        ImageSequence::<Rgba>::new();
+
+    for deg in (0..360).step_by(10) {
+        let clone = image.clone()
+            .hue_rotated(deg);
+        sequence.push_frame(Frame::from_image(clone))
+    }
+
+    Ok(sequence)
+}
+
 /// builds an image out of braille characters
 pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: BrailleOption) -> R {
     let image = resize_to(

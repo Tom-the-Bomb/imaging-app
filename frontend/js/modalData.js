@@ -116,4 +116,8 @@ const formMapping = {
     'lines': shapesInput,
     'balls': shapesInput,
     'squares': shapesInput,
+    'black_white': 'No options available',
+    'emboss': 'No options available',
+    'edge': 'No options available',
+    'hue_rotate': 'No options available',
 }

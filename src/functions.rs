@@ -223,12 +223,14 @@ pub fn edge(image: Image<Rgba>, _: NoArgs) -> R {
 }
 
 /// black / white pixels
-pub fn black_white(image: Image<Rgba>, _: NoArgs) -> R {
+pub fn black_white(image: Image<Rgba>, SmoothOption { smooth }: SmoothOption) -> R {
     let image = resize_to(
         image, 80,
     );
     let image = resize_to_alg(
-        image, 400, ResizeAlgorithm::Nearest,
+        image, 400,
+        if smooth.unwrap_or(false) { ResizeAlgorithm::Bilinear }
+        else { ResizeAlgorithm::Nearest },
     )
         .convert::<BitPixel>()
         .convert::<Rgba>();

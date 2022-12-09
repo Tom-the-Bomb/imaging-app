@@ -105,6 +105,13 @@ const shapesInput = `
 </div>
 `
 
+const blackWhiteInput = `
+<div class="form-check form-switch">
+    <input class="form-check-input" type="checkbox" id="smooth">
+    <label class="form-check-label" for="smooth">Smooth</label>
+</div>
+`
+
 const formMapping = {
     'lego': legoInput,
     'minecraft': mcInput,
@@ -116,7 +123,7 @@ const formMapping = {
     'lines': shapesInput,
     'balls': shapesInput,
     'squares': shapesInput,
-    'black_white': 'No options available',
+    'black_white': blackWhiteInput,
     'emboss': 'No options available',
     'edge': 'No options available',
     'hue_rotate': 'No options available',

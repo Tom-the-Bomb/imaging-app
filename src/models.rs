@@ -54,6 +54,13 @@ pub struct ShapesOption {
     pub gif: Option<bool>,
 }
 
+/// used for `black_white`
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct SmoothOption {
+    /// indicates whether or not to have smooth pixels
+    pub smooth: Option<bool>,
+}
+
 /// an empty struct used in endpoints with no query arguments to accept
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NoArgs {}

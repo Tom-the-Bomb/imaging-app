@@ -289,10 +289,6 @@ footer {
     color: rgb(198, 180, 180);
 }
 
-#modal-body .invalid-feedback {
-    margin-bottom: 1.5em;
-}
-
 #modal-body .form-control {
-    margin-top: 1em;
+    margin-top: 1.5em;
 }

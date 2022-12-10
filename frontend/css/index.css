@@ -249,8 +249,8 @@ footer {
 
 #output-image {
     border-radius: 1em;
-    outline: 3px solid rgb(96, 96, 171);
-    max-width: 25em;
+    border: 3px solid rgb(96, 96, 171);
+    max-width: min(25em, 90vw);
     max-height: 25em;
 }
 

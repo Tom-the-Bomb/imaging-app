@@ -21,14 +21,18 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    /* backgrounds made with BGJar.com */
     background-image:
+        url('../assets/bg-lines.svg'),
         url('../assets/background.svg'),
         linear-gradient(
             40deg,
-            rgb(32, 31, 52),
+            rgb(40, 37, 65),
             rgb(45, 45, 65),
-            rgb(78, 75, 110)
+            rgb(81, 79, 120)
         );
+    background-attachment: fixed;
+    background-size: cover;
 }
 
 main {
@@ -92,11 +96,11 @@ footer {
 }
 
 .lg-shadow {
-    box-shadow: 10px 10px 10px rgb(24, 24, 33);
+    box-shadow: 10px 10px 12px 3px rgb(24, 24, 33);
 }
 
 .lg-shadow:hover {
-    box-shadow: 13px 13px 10px rgb(24, 24, 33);
+    box-shadow: 13px 13px 15px 4px rgb(24, 24, 33);
 }
 
 #form {
@@ -106,7 +110,7 @@ footer {
     width: 20em;
     padding: 2em;
     border-radius: 1em;
-    background-color: rgb(30, 31, 48);
+    background-color: rgb(30, 31, 45);
 }
 
 .form-header {
@@ -245,7 +249,7 @@ footer {
 
 #output-image {
     border-radius: 1em;
-    outline: 3px solid rgb(89, 89, 154);
+    outline: 3px solid rgb(96, 96, 171);
     max-width: 25em;
     max-height: 25em;
 }

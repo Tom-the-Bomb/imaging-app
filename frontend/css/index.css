@@ -63,6 +63,7 @@ h1 {
 #subheader {
     color: rgb(228, 193, 173);
     font-size: medium;
+    font-weight: bold;
     font-family: var(--text-font);
 }
 

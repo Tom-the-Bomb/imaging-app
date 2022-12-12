@@ -60,6 +60,12 @@ h1 {
     transform: scale(1.05);
 }
 
+#subheader {
+    color: rgb(228, 193, 173);
+    font-size: medium;
+    font-family: var(--text-font);
+}
+
 #main-container {
     width: 100%;
     display: flex;
@@ -81,7 +87,7 @@ nav {
 }
 
 footer {
-    margin-top: 4em;
+    margin-top: 5em;
     text-align: center;
     padding: 1em;
     font-family: monospace;

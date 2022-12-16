@@ -31,7 +31,7 @@ async fn run(app: Router<Body>, port: Option<u16>) {
         .with_graceful_shutdown(async {
             tokio::signal::ctrl_c()
                 .await
-                .expect("Failed to await for SIGINT")
+                .expect("Failed to await for SIGINT");
         });
 
     println!("Server initialized");

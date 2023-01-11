@@ -331,7 +331,7 @@ pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption)
                         rng.gen_range(0..=9)
                             .to_string()
                     } else {
-                        CHAR_SAMPLE[rng.gen_range(0..CHAR_SAMPLE.len()) as usize]
+                        CHAR_SAMPLE[rng.gen_range(0..CHAR_SAMPLE.len())]
                             .to_string()
                     };
                     let layout = TextLayout::new()
@@ -363,7 +363,7 @@ pub fn lines(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOpt
     for _ in 0..t {
         sequence.push_frame(
             gen_shape_frame(&image, ShapeMethod::Line, block, density)
-        )
+        );
     }
     Ok(sequence)
 }
@@ -381,7 +381,7 @@ pub fn balls(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOpt
     for _ in 0..t {
         sequence.push_frame(
             gen_shape_frame(&image, ShapeMethod::Ball, block, density)
-        )
+        );
     }
     Ok(sequence)
 }
@@ -399,7 +399,7 @@ pub fn squares(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesO
     for _ in 0..t {
         sequence.push_frame(
             gen_shape_frame(&image, ShapeMethod::Square, block, density)
-        )
+        );
     }
     Ok(sequence)
 }

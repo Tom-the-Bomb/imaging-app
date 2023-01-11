@@ -116,7 +116,7 @@ pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, invert: bool, th
             region[(j - y) as usize][(i - x) as usize] =
                 (gray < threshold)
                     .then_some(if invert { "0" } else { "1" })
-                    .unwrap_or_else(|| if invert { "1" } else { "0" });
+                    .unwrap_or(if invert { "1" } else { "0" });
         }
     }
 

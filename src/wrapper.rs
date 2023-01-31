@@ -1,3 +1,5 @@
+//! module containing the the wrapper macro for routes on the webserver
+
 use std::fmt::Display;
 use axum::http::StatusCode;
 

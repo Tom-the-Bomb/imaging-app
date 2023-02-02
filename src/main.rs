@@ -39,6 +39,7 @@ async fn run(app: Router<Body>, port: Option<u16>) {
 }
 
 /// 404 Not Found fallback handler
+#[allow(clippy::unused_async)]
 pub async fn not_found() -> Response {
     (
         StatusCode::NOT_FOUND,
@@ -47,6 +48,7 @@ pub async fn not_found() -> Response {
 }
 
 /// handler for root "/" (homepage)
+#[allow(clippy::unused_async)]
 pub async fn root() -> Html<String> {
     Html(include_str!("../frontend/index.html").to_string())
 }
@@ -84,7 +86,7 @@ async fn main() {
             .handle_error(|err| async move {
                 (
                     StatusCode::INTERNAL_SERVER_ERROR,
-                    format!("Something went wrong: {}", err),
+                    format!("Something went wrong: {err}"),
                 )
             }),
         );

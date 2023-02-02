@@ -6,6 +6,7 @@ use rand::{thread_rng, Rng};
 use crate::braille_data::BRAILLE_DATA;
 
 /// enum for determining type of shape to draw for [`gen_shape_frame`]
+#[derive(Debug, Clone, Copy)]
 pub enum ShapeMethod {
     Line,
     Ball,
@@ -16,7 +17,7 @@ pub enum ShapeMethod {
 /// with each pixel's color in the image
 pub fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
     image.map_pixels(|p| {
-        let p = p.value() as i32;
+        let p = i32::from(p.value());
 
         let mut value = if p < 33 {
             value - 100
@@ -26,19 +27,16 @@ pub fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
             value - 133 + p
         };
 
-        if value < 0 {
-            value = 0;
-        } else if value > 255 {
-            value = 255;
-        }
+        value = value.clamp(0, 255);
 
+        #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
         L::new(value as u8)
     })
 }
 
 /// grayscales a pixel
-pub fn grayscale(px: &Rgba) -> u32 {
-    (px.r as u32 + px.b as u32 + px.g as u32) / 3
+pub fn grayscale(px: Rgba) -> u32 {
+    (u32::from(px.r) + u32::from(px.b) + u32::from(px.g)) / 3
 }
 
 /// helper function to quickly write text on a blank image
@@ -62,11 +60,17 @@ pub fn draw_text(font: &Font, text: String) -> Image<Rgba> {
 /// with provided resampling algorithm
 pub fn resize_to_alg(image: Image<Rgba>, size: u32, alg: ResizeAlgorithm) -> Image<Rgba> {
     let (w, h) = image.dimensions();
+
+    #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     let (width, height) =
         if w > h {
-            (size, ((size as f32 / w as f32) * h as f32).ceil() as u32)
+            (size, (
+                (f64::from(size) / f64::from(w)) * f64::from(h)
+            ).ceil() as u32)
         } else {
-            (((size as f32 / h as f32) * w as f32).ceil() as u32, size)
+            ((
+                (f64::from(size) / f64::from(h)) * f64::from(w)
+            ).ceil() as u32, size)
         };
 
     image.resized(width, height, alg)
@@ -78,7 +82,7 @@ pub fn resize_to(image: Image<Rgba>, size: u32) -> Image<Rgba> {
 }
 
 /// converts a RIL [`Image`] to a Photon-rs [`PhotonImage`]
-pub fn to_photon(image: Image<Rgba>) -> ril::Result<PhotonImage> {
+pub fn to_photon(image: &Image<Rgba>) -> ril::Result<PhotonImage> {
     let mut buffer = Vec::<u8>::new();
     image.encode(ImageFormat::Png, &mut buffer)?;
 
@@ -86,7 +90,7 @@ pub fn to_photon(image: Image<Rgba>) -> ril::Result<PhotonImage> {
 }
 
 /// converts a Photon-rs [`PhotonImage`] to a RIL [`Image`]
-pub fn to_ril(image: PhotonImage) -> Image<Rgba> {
+pub fn to_ril(image: &PhotonImage) -> Image<Rgba> {
     Image::<Rgba>::from_pixels(
         image.get_width(),
         {
@@ -99,24 +103,23 @@ pub fn to_ril(image: PhotonImage) -> Image<Rgba> {
 }
 
 /// maps an image pixel value [`Rgba`] to a corresponding braille character
-pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, invert: bool, threshold: u32) -> Option<String> {
+pub fn get_braille_from_px(x: usize, y: usize, image: &Image<Rgba>, invert: bool, threshold: u32) -> Option<String> {
     let mut region = vec![vec!["0", "0"]; 4];
     let (width, height) = image.dimensions();
     for i in x..x + 2 {
+        #[allow(clippy::cast_possible_truncation)]
         for j in y..y + 4 {
-            let mut gray: u32 = 0;
+            let gray = if i >= width as usize || j >= height as usize
+            { 0 } else {
+                let px = image.get_pixel(i as u32, j as u32)
+                    .unwrap();
+                grayscale(*px)
+            };
 
-            if !(i >= width || j >= height) {
-                gray = {
-                    let px = image.get_pixel(i, j)
-                        .unwrap();
-                    grayscale(px)
-                };
-            }
-            region[(j - y) as usize][(i - x) as usize] =
-                (gray < threshold)
-                    .then_some(if invert { "0" } else { "1" })
-                    .unwrap_or(if invert { "1" } else { "0" });
+            region[j - y][i - x] =
+                if gray < threshold {
+                    if invert { "0" } else { "1" }
+                } else if invert { "1" } else { "0" };
         }
     }
 
@@ -132,21 +135,28 @@ pub fn get_braille_from_px(x: u32, y: u32, image: &Image<Rgba>, invert: bool, th
 
 /// fixes braille string spaces and padding at the end
 pub fn fix_braille_spaces(mut matrix: Vec<Vec<String>>, width: usize, height: usize) -> Vec<Vec<String>> {
-    for y in 0..height {
+    for row in matrix
+        .iter_mut()
+        .take(height)
+    {
         let mut last = width - 1;
         for x in (0..width).rev() {
-            if matrix[y][x] != "." {
+            if row[x] != "." {
                 break;
             }
             last = x;
         }
-        matrix[y] = matrix[y][0..last]
+        *row = row[0..last]
             .to_vec();
     }
-    for y in 0..height {
-        for x in 0..matrix[y].len() {
-            if matrix[y][x] == "." {
-                matrix[y][x] = "⢀".to_string();
+
+    for row in matrix
+        .iter_mut()
+        .take(height)
+    {
+        for item in row.iter_mut() {
+            if item == "." {
+                *item = "⢀".to_string();
             }
         }
     }
@@ -156,8 +166,11 @@ pub fn fix_braille_spaces(mut matrix: Vec<Vec<String>>, width: usize, height: us
 /// resizes ascii image for proper aspect ratio when rendering the characters
 pub fn ascii_resize(image: Image<Rgba>, cols: u32) -> Image<Rgba> {
     let (w, h) = image.dimensions();
-    let ratio = h as f32 / w as f32;
-    let rows = (ratio * (cols as f32 / 2.0)) as u32;
+    let ratio = f64::from(h) / f64::from(w);
+
+    #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+    let rows = (ratio * (f64::from(cols) / 2.0)) as u32;
+
     image.resized(cols, rows, ResizeAlgorithm::Bicubic)
 }
 
@@ -168,7 +181,7 @@ pub fn gen_shape_frame(
     size: Option<u8>,
     density: Option<u32>,
 ) -> Frame<Rgba> {
-    let size = size.unwrap_or(10) as u32;
+    let size = u32::from(size.unwrap_or(10));
     let density = density.unwrap_or(10000);
     let (width, height) = image.dimensions();
 

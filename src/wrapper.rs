@@ -9,7 +9,7 @@ pub fn map_err<E>(err: E) -> (StatusCode, String)
 where
     E: Display
 {
-    (StatusCode::INTERNAL_SERVER_ERROR, format!("Something went wrong: {}", err))
+    (StatusCode::INTERNAL_SERVER_ERROR, format!("Something went wrong: {err}"))
 }
 
 /// a macro for boilerplate wrapper code around

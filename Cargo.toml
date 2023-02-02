@@ -1,7 +1,17 @@
 [package]
 name = "image-web"
+authors = ["Tom-the-Bomb"]
+description = "A simply imaging web app wrtten in rust"
+repository = "https://github.com/Tom-the-Bomb/imaging-app"
+license = "MIT"
 version = "0.1.0"
 edition = "2021"
+keywords = ["web", "async"]
+categories = [
+    "multimedia",
+    "multimedia::images",
+    "web-programming",
+]
 
 [dependencies]
 rand = "0.8"

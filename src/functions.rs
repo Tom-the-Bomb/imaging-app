@@ -1,10 +1,12 @@
 //! File containing all processing functions for indivdual endpoints
 
-use std::collections::HashMap;
+use std::{path::Path, collections::HashMap};
 use rand::{thread_rng, Rng};
 use std::fs::read_dir;
 use photon_rs::effects;
 use ril::prelude::*;
+
+#[allow(clippy::wildcard_imports)]
 use crate::{
     helpers::*,
     models::*,
@@ -58,11 +60,15 @@ lazy_static::lazy_static! {
 
             if file.file_name()
                 .into_string()
-                .map_or(false, |s| !s.ends_with(".png"))
+                .map_or(false, |s| !Path::new(&s)
+                    .extension()
+                    .map_or(false, |ext| ext.eq_ignore_ascii_case("png"))
+                )
             {
                 continue;
             }
 
+            #[allow(clippy::option_if_let_else)]
             if let Ok(block) =
                 Image::<Rgba>::open(file.path())
             {
@@ -78,7 +84,7 @@ lazy_static::lazy_static! {
         }
 
         println!("Loaded {} minecraft blocks", map.len());
-        println!("Failed to load {} images", failed);
+        println!("Failed to load {failed} images");
         map
     };
 
@@ -93,11 +99,12 @@ lazy_static::lazy_static! {
 
 /// builds an image out of lego blocks
 /// of provided `size`, defaulting to 40 blocks
+#[allow(clippy::unnecessary_wraps, clippy::many_single_char_names)]
 pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
     let (mut x, mut y) = (0u32, 0u32);
     let image = resize_to(
         image,
-        size.unwrap_or(40) as u32
+        u32::from(size.unwrap_or(40))
     );
     let mut base = Image::<Rgba>::new(
         image.width() * LEGO_SIZE,
@@ -111,9 +118,9 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
                 base.paste(x, y, {
                     let (r, g, b) = LEGO.bands();
                     &Image::from_bands((
-                        colorize_lego_band(r, pixel.r as i32),
-                        colorize_lego_band(g, pixel.g as i32),
-                        colorize_lego_band(b, pixel.b as i32),
+                        colorize_lego_band(r, i32::from(pixel.r)),
+                        colorize_lego_band(g, i32::from(pixel.g)),
+                        colorize_lego_band(b, i32::from(pixel.b)),
                         Image::new(LEGO_SIZE, LEGO_SIZE, L::new(pixel.a))
                     ))
                 });
@@ -129,11 +136,12 @@ pub fn lego(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
 
 /// builds an image out of minecraft blocks
 /// of provided `size`, defaulting to 70 blocks
+#[allow(clippy::unnecessary_wraps)]
 pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
     let (mut x, mut y) = (0u32, 0u32);
     let image = resize_to(
         image,
-        size.unwrap_or(70) as u32
+        u32::from(size.unwrap_or(70))
     );
     let mut base = Image::<Rgba>::new(
         image.width() * MCSIZE,
@@ -147,12 +155,12 @@ pub fn minecraft(image: Image<Rgba>, SizeOption { size }: SizeOption) -> R {
                 base.paste(x, y, {
                     let color = MC_SAMPLE.iter()
                         .min_by_key(|color|
-                            color.0.abs_diff(pixel.r) as u32 +
-                            color.1.abs_diff(pixel.g) as u32 +
-                            color.2.abs_diff(pixel.b) as u32 +
-                            color.3.abs_diff(pixel.a) as u32
+                            u32::from(color.0.abs_diff(pixel.r)) +
+                            u32::from(color.1.abs_diff(pixel.g)) +
+                            u32::from(color.2.abs_diff(pixel.b)) +
+                            u32::from(color.3.abs_diff(pixel.a))
                         )
-                        .cloned()
+                        .copied()
                         .unwrap();
 
                     &MC_IMAGES.get(&color)
@@ -175,13 +183,13 @@ pub fn paint(image: Image<Rgba>, PaintOption { radius, intensity }: PaintOption)
     let image = resize_to(
         image, 360,
     );
-    let mut img = to_photon(image)?;
+    let mut img = to_photon(&image)?;
 
     let radius = radius.unwrap_or(5);
     let intensity = intensity.unwrap_or(60.0);
     effects::oil(&mut img, radius, intensity);
 
-    let image = to_ril(img);
+    let image = to_ril(&img);
     Ok(image)
 }
 
@@ -190,10 +198,10 @@ pub fn frost(image: Image<Rgba>, _: NoArgs) -> R {
     let image = resize_to(
         image, 360,
     );
-    let mut img = to_photon(image)?;
+    let mut img = to_photon(&image)?;
     effects::frosted_glass(&mut img);
 
-    let image = to_ril(img);
+    let image = to_ril(&img);
     Ok(image)
 }
 
@@ -202,10 +210,10 @@ pub fn emboss(image: Image<Rgba>, _: NoArgs) -> R {
     let image = resize_to(
         image, 360,
     );
-    let mut img = to_photon(image)?;
+    let mut img = to_photon(&image)?;
     photon_rs::conv::emboss(&mut img);
 
-    let image = to_ril(img);
+    let image = to_ril(&img);
     Ok(image)
 }
 
@@ -214,15 +222,16 @@ pub fn edge(image: Image<Rgba>, _: NoArgs) -> R {
     let image = resize_to(
         image, 360,
     );
-    let mut img = to_photon(image)?;
+    let mut img = to_photon(&image)?;
     photon_rs::conv::edge_one(&mut img);
     photon_rs::conv::sharpen(&mut img);
 
-    let image = to_ril(img);
+    let image = to_ril(&img);
     Ok(image)
 }
 
 /// black / white pixels
+#[allow(clippy::unnecessary_wraps)]
 pub fn black_white(image: Image<Rgba>, SmoothOption { smooth }: SmoothOption) -> R {
     let image = resize_to(
         image, 80,
@@ -239,6 +248,7 @@ pub fn black_white(image: Image<Rgba>, SmoothOption { smooth }: SmoothOption) ->
 }
 
 /// rotates the hue (hsv) value of the image 360deg
+#[allow(clippy::unnecessary_wraps)]
 pub fn hue_rotate(image: Image<Rgba>, _: NoArgs) -> RGif {
     let image = resize_to(
         image, 360,
@@ -249,30 +259,39 @@ pub fn hue_rotate(image: Image<Rgba>, _: NoArgs) -> RGif {
     for deg in (0..360).step_by(10) {
         let clone = image.clone()
             .hue_rotated(deg);
-        sequence.push_frame(Frame::from_image(clone))
+        sequence.push_frame(Frame::from_image(clone));
     }
 
     Ok(sequence)
 }
 
 /// builds an image out of braille characters
+#[allow(
+    clippy::cast_possible_truncation,
+    clippy::unnecessary_wraps,
+    clippy::cast_sign_loss,
+)]
 pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: BrailleOption) -> R {
     let image = resize_to(
         image,
-        size.unwrap_or(130) as u32
+        u32::from(size.unwrap_or(130))
     );
-    let w = (image.width() as f32 / 2.0).ceil() as usize;
-    let h = (image.height() as f32 / 4.0).ceil() as usize;
+    let w = (f64::from(image.width()) / 2.0).ceil() as usize;
+    let h = (f64::from(image.height()) / 4.0).ceil() as usize;
     let mut mat = vec![vec![" ".to_string(); w]; h];
 
     for x in 0..w {
-        for y in 0..h {
-            mat[y][x] = get_braille_from_px(
-                (x * 2) as u32,
-                (y * 4) as u32,
+        for (y, row) in mat
+            .iter_mut()
+            .enumerate()
+            .take(h)
+        {
+            row[x] = get_braille_from_px(
+                x * 2,
+                y * 4,
                 &image,
                 invert.unwrap_or(false),
-                threshold.unwrap_or(90) as u32,
+                u32::from(threshold.unwrap_or(90)),
             ).unwrap_or_else(|| ".".to_string());
         }
     }
@@ -288,10 +307,11 @@ pub fn braille(image: Image<Rgba>, BrailleOption { size, threshold, invert }: Br
 }
 
 /// builds an image out of ascii punctuation characters
+#[allow(clippy::unnecessary_wraps)]
 pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R {
     let mut image = ascii_resize(
         image,
-        size.unwrap_or(130) as u32
+        u32::from(size.unwrap_or(130))
     );
     if invert.unwrap_or(false) {
         image.invert();
@@ -309,10 +329,11 @@ pub fn ascii(image: Image<Rgba>, AsciiOption { size, invert }: AsciiOption) -> R
 }
 
 /// builds an image out of ascii punctuation characters
+#[allow(clippy::unnecessary_wraps)]
 pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption) -> ril::Result<ImageSequence<Rgb>> {
     let image = resize_to(
         image,
-        size.unwrap_or(80) as u32
+        u32::from(size.unwrap_or(80))
     );
     let mut sequence = ImageSequence::<Rgb>::new();
 
@@ -345,20 +366,20 @@ pub fn matrix(image: Image<Rgba>, MatrixOption { size, num_only }: MatrixOption)
             x = 0;
             y += 30;
         }
-        sequence.push_frame(Frame::from_image(canvas))
+        sequence.push_frame(Frame::from_image(canvas));
     }
     Ok(sequence)
 }
 
 /// builds a shape out of diagonal lines
+#[allow(clippy::unnecessary_wraps)]
 pub fn lines(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
     let image = resize_to(
         image, 360,
     );
     let mut sequence = ImageSequence::<Rgba>::new();
-    let t = gif.unwrap_or(true)
-        .then_some(3)
-        .unwrap_or(1);
+    let t = if gif.unwrap_or(true)
+        { 3 } else { 1 };
 
     for _ in 0..t {
         sequence.push_frame(
@@ -369,14 +390,14 @@ pub fn lines(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOpt
 }
 
 /// builds a shape out of circles
+#[allow(clippy::unnecessary_wraps)]
 pub fn balls(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
     let image = resize_to(
         image, 360,
     );
     let mut sequence = ImageSequence::<Rgba>::new();
-    let t = gif.unwrap_or(true)
-        .then_some(3)
-        .unwrap_or(1);
+    let t = if gif.unwrap_or(true)
+        { 3 } else { 1 };
 
     for _ in 0..t {
         sequence.push_frame(
@@ -387,14 +408,14 @@ pub fn balls(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOpt
 }
 
 /// builds a shape out of squares
+#[allow(clippy::unnecessary_wraps)]
 pub fn squares(image: Image<Rgba>, ShapesOption { block, density, gif }: ShapesOption) -> RGif {
     let image = resize_to(
         image, 360,
     );
     let mut sequence = ImageSequence::<Rgba>::new();
-    let t = gif.unwrap_or(true)
-        .then_some(3)
-        .unwrap_or(1);
+    let t = if gif.unwrap_or(true)
+        { 3 } else { 1 };
 
     for _ in 0..t {
         sequence.push_frame(

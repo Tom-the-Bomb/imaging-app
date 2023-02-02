@@ -8,9 +8,9 @@ rand = "0.8"
 dotenv = "0.15"
 lazy_static = "1.4"
 photon-rs = "0.3"
-tower = {version = "0.4", features = ["full"] }
-tower-http = { version = "0.3", features = ["full"] }
-tokio = { version = "1.19", features = ["full"] }
+tower = { version = "0.4", features = ["util"] }
+tower-http = { version = "0.3", features = ["fs"] }
+tokio = { version = "1.19", features = ["macros", "signal", "rt", "rt-multi-thread"]}
 serde = { version = "1.0", features = ["derive"] }
 axum = { version = "0.5", features = ["headers", "multipart"] }
 ril = { git = "https://github.com/jay3332/ril", features = ["all-pure"] }

@@ -110,7 +110,8 @@ pub fn get_braille_from_px(x: usize, y: usize, image: &Image<Rgba>, invert: bool
     for i in x..x + 2 {
         #[allow(clippy::cast_possible_truncation)]
         for j in y..y + 4 {
-            let gray = if i >= width as usize || j >= height as usize
+            let gray =
+                if i >= width as usize || j >= height as usize
             { 0 } else {
                 let px = image.get_pixel(i as u32, j as u32)
                     .unwrap();

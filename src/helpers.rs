@@ -34,12 +34,13 @@ pub fn colorize_lego_band(image: Image<L>, value: i32) -> Image<L> {
     })
 }
 
-/// grayscales a pixel
+/// grayscales an RGBA pixel
+#[allow(clippy::missing_const_for_fn)]
 pub fn grayscale(px: Rgba) -> u32 {
     (u32::from(px.r) + u32::from(px.b) + u32::from(px.g)) / 3
 }
 
-/// helper function to quickly write text on a blank image
+/// helper function to quickly write basic text on a blank image with a provided font
 pub fn draw_text(font: &Font, text: String) -> Image<Rgba> {
     let layout = TextLayout::new()
         .with_wrap(WrapStyle::None)

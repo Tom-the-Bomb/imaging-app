@@ -97,7 +97,7 @@ function enableTooltips() {
     );
     tooltipTriggerList.map(
         function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         }
     );
 

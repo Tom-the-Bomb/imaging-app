@@ -1,7 +1,7 @@
 [package]
 name = "image-web"
 authors = ["Tom-the-Bomb"]
-description = "A simply imaging web app wrtten in rust"
+description = "A simple imaging web app written in rust"
 repository = "https://github.com/Tom-the-Bomb/imaging-app"
 license = "MIT"
 version = "0.1.0"

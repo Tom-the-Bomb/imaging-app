@@ -94,7 +94,7 @@ async fn main() {
     let port = std::env::var("PORT")
         .unwrap()
         .parse::<u16>()
-        .unwrap();
+        .ok();
 
-    run(app, Some(port)).await;
+    run(app, port).await;
 }

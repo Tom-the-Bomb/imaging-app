@@ -4,7 +4,7 @@ Written in Rust 🦀
 
 ### Demo
 
-![demo](https://media.discordapp.net/attachments/918592221673058366/1320948458877882428/image.png?ex=68ba519e&is=68b9001e&hm=5425ea2aae8c621c8f9590279e7636d58f439653cc1dbe818ec8cbf5ff58e3df&=&format=webp&quality=lossless&width=793&height=371)
+![demo](https://media.discordapp.net/attachments/918592221673058366/1320948458877882428/image.png?ex=68bf979e&is=68be461e&hm=3c8c257c803239a6840495b26f8d31dcc36337e5e6a1db1e49413039afd369e2&=&format=webp&quality=lossless&width=793&height=371)
 
 **More output examples**
 
